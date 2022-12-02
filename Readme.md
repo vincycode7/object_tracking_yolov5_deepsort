@@ -18,7 +18,7 @@
 1. install dependencies using   `pipenv install` or `pipenv run pip3 install -r requirements.txt`
 
 ## Running Project
-1. Confirm your current working directory is `object_tracking_yolov5`
+1. Confirm your current working directory is `object_tracking_yolov5_deepsort`
 2. Activate the environment using the command  `pipenv shell`
 3. Run the app using the command `streamlit run Home.py` or `reset && streamlit run Home.py`
 
@@ -28,10 +28,11 @@ Note: please upon first run, project will download model weight which would then
 `Local URL: http://localhost:port or Network URL: http://host:port` copy any one of them and paste in your browser.
 
 ## Reference
-1) [Yolov5_DeepSort_Pytorch](https://github.com/mikel-brostrom/Yolov5_DeepSort_Pytorch)   
-2) [yolov5](https://github.com/ultralytics/yolov5)  
-3) [deep_sort_pytorch](https://github.com/ZQPei/deep_sort_pytorch)       
-4) [deep_sort](https://github.com/nwojke/deep_sort)   
+1) [object_tracking_yolov5_deepsort] (https://github.com/vincycode7/object_tracking_yolov5_deepsort)
+2) [Yolov5_DeepSort_Pytorch](https://github.com/mikel-brostrom/Yolov5_DeepSort_Pytorch)   
+3) [yolov5](https://github.com/ultralytics/yolov5)  
+4) [deep_sort_pytorch](https://github.com/ZQPei/deep_sort_pytorch)       
+5) [deep_sort](https://github.com/nwojke/deep_sort)   
 
 Note: please follow the [LICENCE](https://github.com/ultralytics/yolov5/blob/master/LICENSE) of YOLOv5! 
 
