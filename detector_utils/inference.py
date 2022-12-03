@@ -12,6 +12,25 @@ def load_model_detector():
 global deepsort_memory
 deepsort_memory = None
 
+def getAvaillableCams():
+    # start from index one and loops till all cameras are picked
+    max_cam_port = 5
+    arr = []
+    
+    for each_index in range(max_cam_port):
+        try:
+            cap = cv2.VideoCapture(each_index)
+            print(f"index: {each_index}")
+            print(cap)
+            if cap.isOpened():
+                arr.append(each_index)
+            cap.release()
+            cv2.destroyAllWindows()
+        except:
+            pass
+    arr.append(None)
+    return arr
+
 # Input component
 def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_to_canvas=None, detector=None, perform_inference=False, confidence=0.40,iou=0.8):
     """
@@ -60,6 +79,9 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
     elif input_type in ["Video"]:
         video_file_buff = write_input_to_canvas.file_uploader("Upload a Video File", type=["mp4", "mov", "avi", "asf","m4v"])
         default_test_vid = write_input_to_canvas.checkbox("Use Default Test Video", True)        
+    elif input_type in ["Camera"]:
+        available_cams = getAvaillableCams()
+        cam_index = write_input_to_canvas.selectbox("Select Camera", available_cams)
 
     inputLocationImg = write_output_to_canvas.sidebar.empty()
     inputLocationImg.image([])
@@ -99,9 +121,8 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                 except:
                     pass
 
-    if input_type in ["Video", "Web Cam 1"] and perform_inference:
+    if input_type in ["Video", "Camera"] and perform_inference:
         file_name = None
-        inputLocationImg.image([])
         if input_type in ["Video"]:
             if video_file_buff:
                 tfile = tempfile.NamedTemporaryFile(delete=False)
@@ -109,38 +130,38 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                 file_name = tfile.name
             elif default_test_vid:
                 file_name = default_vid_path
-        if input_type in ["Web Cam 1"]:
-            file_name = 0
+        if input_type in ["Camera"]:
+            file_name = int(cam_index) if cam_index != None else None
 
         # Run detection
-        if file_name != None or file_name==0:
+        if file_name != None:
             deepsort_memory = detector._init_tracker()
             inputLocationImg = write_output_to_canvas.sidebar.empty()
             multi_input = cv2.VideoCapture(file_name)
-            while multi_input.isOpened():
+
+            while True:
                 check, frame = multi_input.read()
                 frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
                 if perform_inference and detector:
                     image = np.asarray(frame)
-                image_with_boxes,deepsort_memory, detection_time, tracking_time = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
-                image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
-                if display_input_file:
-                    inputLocationImg.image(frame2)
-                outputLocation.image(image_with_boxes)
+                    image_with_boxes,deepsort_memory, detection_time, tracking_time = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
+                    image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
+                    if display_input_file:
+                        inputLocationImg.image(frame2)
+                    outputLocation.image(image_with_boxes)
 
-                try:
-                    data = pd.DataFrame(deepsort_memory.results["class_metric"])
-                    data_fields = outputDataframeLocation.columns(2)
-                    data_fields[0].dataframe(data=data.loc['class_count'])
-                    data_fields[1].dataframe(data=data.loc['location_unique_id'])
-                except:
-                    pass
-            # When everything done, release the video capture object
-            multi_input.release()
+                    try:
+                        data = pd.DataFrame(deepsort_memory.results["class_metric"])
+                        data_fields = outputDataframeLocation.columns(2)
+                        data_fields[0].dataframe(data=data.loc['class_count'])
+                        data_fields[1].dataframe(data=data.loc['location_unique_id'])
+                    except:
+                        pass
+            
             # Closes all the frames
             cv2.destroyAllWindows()
-            inputLocationImg.image([])
+
     demacateLocation.markdown("---")
             
 def inference():
@@ -171,14 +192,16 @@ def inference():
 
     # st.sidebar.markdown("---")
 
-    input_type = st.sidebar.selectbox("Input Type", ["Image","Video", "Web Cam 1"])
-    
+    input_type = st.sidebar.selectbox("Input Type", ["Image","Video", "Camera"])
+
     # Get model
     model = load_model_detector()
     names = list(model.key_to_string.values())
 
-    # Display input and output data
     process_input_feed(write_input_to_canvas=st.sidebar, input_type=input_type, write_output_to_canvas=st, names=names, detector=model, confidence=confidence, perform_inference=perform_inference,iou=iou)
+    perform_inference = False
+    
+    # Display input and output data
     st.markdown("###### - **The `Class Counts` are the unique object counts across frames without duplicates.**")
     st.markdown("###### - **The `Location Unique Ids`, is a one-on-one between values assigned to unique objects and values used for representation on the image, deepsort values as key while representation value as value.**")
 
