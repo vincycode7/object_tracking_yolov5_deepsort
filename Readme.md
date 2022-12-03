@@ -68,7 +68,7 @@ This is an example of what to expect when project starts running.
 An High level description of system implementation on an edge device.
 
 ## Reference
-1) [object_tracking_yolov5_deepsort] (https://github.com/vincycode7/object_tracking_yolov5_deepsort)
+1) [object_tracking_yolov5_deepsort](https://github.com/vincycode7/object_tracking_yolov5_deepsort)
 2) [Yolov5_DeepSort_Pytorch](https://github.com/mikel-brostrom/Yolov5_DeepSort_Pytorch)   
 3) [yolov5](https://github.com/ultralytics/yolov5)  
 4) [deep_sort_pytorch](https://github.com/ZQPei/deep_sort_pytorch)       
