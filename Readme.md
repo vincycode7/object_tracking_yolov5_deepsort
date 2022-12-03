@@ -54,7 +54,7 @@ Once project started running you will have a web interface pop-up, In case you d
 
 This is an example of what to expect when project starts running.
 
-![alt text](./static_files/Screenshot%20from%202022-12-03%2001-56-27.png) ![alt text](./static_files/Screenshot%20from%202022-12-03%2002-02-04.png)
+![alt text](./static_files/Screenshot%20from%202022-12-03%2001-56-27.png)       ![alt text](./static_files/Screenshot%20from%202022-12-03%2002-02-04.png)
 
 
 ## Step 6 - Interacting with the User Interface(UI).
