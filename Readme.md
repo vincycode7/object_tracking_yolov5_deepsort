@@ -3,7 +3,7 @@
 
 ## Step 0 - General System overview
 
-![alt text](static_files/General System Architecture.png)
+![alt text]('static_files/General System Architecture.png')
 
 This is solution to address the edge detection and tracking of specific objects, for company X, The general architecture highlights the movement of optimized ml model downloaded from the server to edge  device while inference continues on edge device, It also highlight cases where data feedback are gotten to further train model, while this can pose some serious privacy issue, it is the duty of ml engineers to cub that in their system implementation by using different masking technique on the data before sending to the server.
 
