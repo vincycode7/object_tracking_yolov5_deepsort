@@ -14,6 +14,18 @@ deepsort_memory = None
 
 # Input component
 def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_to_canvas=None, detector=None, perform_inference=False, confidence=0.40,iou=0.8):
+    """
+        This function is the input function, It accepts different inputs such as output canvas, input canvas
+        media input type. It uses this information to request for input from the user, pass that to the 
+        backend  object detector and then putting the outputs on the input and output canvas.
+
+        input_type: Type of input to request from user.
+        write_input_to_canvas: canvas to write user inputs.
+        names: names of objects to detect from user inputs
+        write_output_to_canvas:; canvas to write backend detector outputs.
+        detector: The  backend dectector class responsible for the detectoin of objects. 
+        perform_inference: If True it performs inference on inputs.
+    """
     global deepsort_memory
     if deepsort_memory == None:
         deepsort_memory = detector._init_tracker()
@@ -121,6 +133,11 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
     demacateLocation.markdown("---")
             
 def inference():
+
+    """
+        This function is responsible for getting user input from frontend, passing it to
+        the backend functions and methods and then writing the result back to the frontend.
+    """
     # st.markdown("# InstaDeep Detection and Tracking with YOLOv5s")
     st.markdown("##### Instruction: Set your configuration on the left sidebar panel then toggle the `Run Solution` checkbox below to get started.")
     st.markdown("###### **`Please note, If you are getting a low detection / tracking rate, try changing the confidence threshold on the left side bar.`**")
