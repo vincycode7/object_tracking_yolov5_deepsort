@@ -92,8 +92,11 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                 data = pd.DataFrame(deepsort_memory.results["class_metric"])
                 
                 data_fields = outputDataframeLocation.columns(2)
-                data_fields[0].dataframe(data=data.loc['class_count'])
-                data_fields[1].dataframe(data=data.loc['location_unique_id'])
+                try:
+                    data_fields[0].dataframe(data=data.loc['class_count'])
+                    data_fields[1].dataframe(data=data.loc['location_unique_id'])
+                except:
+                    pass
 
     if input_type in ["Video", "Web Cam 1"] and perform_inference:
         file_name = None
@@ -128,8 +131,11 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
 
                 data = pd.DataFrame(deepsort_memory.results["class_metric"])
                 data_fields = outputDataframeLocation.columns(2)
-                data_fields[0].dataframe(data=data.loc['class_count'])
-                data_fields[1].dataframe(data=data.loc['location_unique_id'])
+                try:
+                    data_fields[0].dataframe(data=data.loc['class_count'])
+                    data_fields[1].dataframe(data=data.loc['location_unique_id'])
+                except:
+                    pass
     demacateLocation.markdown("---")
             
 def inference():
