@@ -25,6 +25,11 @@ import torch.backends.cudnn as cudnn
 
 class YoloBaseDetector(object):
     def __init__(self, **kwargs):
+        """
+            This is the base Yolov5 arch for this project
+            It defines how data should flow in and out of
+            the yolo model to suit app use case.
+        """
         self.kwargs = kwargs
         self.img_size = kwargs.get('img_size', 640)
         self.device = select_device(kwargs.get('device', 'cpu')) # 'cuda device, i.e. 0 or 0,1,2,3 or cpu'
@@ -159,7 +164,10 @@ class YoloBaseDetector(object):
 class YoloObjectTrackerFrame(YoloBaseDetector):
     def __init__(self,**kwargs):
         super().__init__(kwargs=kwargs)
-
+        """
+            This is the object tracker, that is responsible for detecting and tracking objects
+            to suit application needs.
+        """
         # ***************************** initialize DeepSORT configs **********************************
         self.cfg = get_config()
         self.cfg_path = kwargs.get('config_deepsort', "./configs/deep_sort.yaml")
