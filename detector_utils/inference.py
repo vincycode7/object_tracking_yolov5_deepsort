@@ -37,12 +37,12 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
     new_frame_time = 0
     filter_classes = st.sidebar.checkbox("Enable Custom Class Filter", True)
     picked_class_ids = []
-    defualt_class = ["car","truck","motorcycle"]
+    default_class = ["car","truck","motorcycle"]
 
     if filter_classes:
-        picked_class = st.sidebar.multiselect("Select Classes to use for output", list(names), default=defualt_class)  
+        picked_class = st.sidebar.multiselect("Select Classes to use for output", list(names), default=default_class)  
     else:
-        picked_class = defualt_class
+        picked_class = default_class
     
     for each in picked_class: 
         picked_class_ids.append(names.index(each))
@@ -101,8 +101,8 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
 
     if input_type in ["Video", "Web Cam 1"] and perform_inference:
         file_name = None
+        inputLocationImg.image([])
         if input_type in ["Video"]:
-            inputLocationImg.image([])
             if video_file_buff:
                 tfile = tempfile.NamedTemporaryFile(delete=False)
                 tfile.write(video_file_buff.read())
@@ -110,18 +110,14 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
             elif default_test_vid:
                 file_name = default_vid_path
         if input_type in ["Web Cam 1"]:
-            inputLocationImg.image([])
             file_name = 0
 
         # Run detection
-        # inputLocationImg = write_output_to_canvas.sidebar.empty()
-        # inputLocationImg.image([])
-            
         if file_name != None or file_name==0:
             deepsort_memory = detector._init_tracker()
             inputLocationImg = write_output_to_canvas.sidebar.empty()
             multi_input = cv2.VideoCapture(file_name)
-            while input_type in ["Video", "Web Cam 1"]:
+            while multi_input.isOpened():
                 check, frame = multi_input.read()
                 frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -140,6 +136,11 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                     data_fields[1].dataframe(data=data.loc['location_unique_id'])
                 except:
                     pass
+            # When everything done, release the video capture object
+            multi_input.release()
+            # Closes all the frames
+            cv2.destroyAllWindows()
+            inputLocationImg.image([])
     demacateLocation.markdown("---")
             
 def inference():
