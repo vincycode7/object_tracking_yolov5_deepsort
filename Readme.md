@@ -5,9 +5,9 @@
 
 ![General System overview](./static_files/General%20System%20Architecture.png)
 
-This is solution to address the edge detection and tracking of specific objects, for company X, The general architecture highlights the movement of optimized ml model downloaded from the server to edge  device while inference continues on edge device, It also highlight cases where data feedback are gotten to further train model, while this can pose some serious privacy issue, it is the duty of ml engineers to cub that in their system implementation by using different masking technique on the data before sending to the server.
+This is solution to address the edge detection and tracking of specific objects for an imaginary company X, The general system architecture highlights the movement of optimized ml model downloaded from the server on to the edge device while inference is done on edge the device, It also highlights cases where data feedback are gotten to further train model. This process of data feedback to the server can pose a serious privacy issue, it is the duty of the ml engineers to privent such privacy issuess in their system implementation by using different masking techniques on the data before sending to the server.
 
-## Step 1 - Get Codebase to local workspace ()
+## Step 1 - Get Codebase to local workspace.
 
 [Terminal-Version]
    1. Open a `terminal` or `command prompt` 
@@ -15,13 +15,13 @@ This is solution to address the edge detection and tracking of specific objects,
    3. Once download is complete, change directory into the current working directory using `cd object_tracking_yolov5_deepsort/` as this directory contains all the code you need.
 
 [Zip-version]
-    1. Navigate to the `<> Code` Dropdown
-    2. Click to view options available
-    3. Click on the download dropdown to download a zipped file of all the code.
-    4. Once download is complete, Unzip into a folder and open the parent folder `cd object_tracking_yolov5_deepsort` with an `IDE` of your choice.
+   1. Navigate to the `<> Code` Dropdown
+   2. Click to view options available
+   3. Click on the download dropdown to download a zipped file of all the code.
+   4. Once download is complete, Unzip into a folder and open the parent folder `object_tracking_yolov5_deepsort` with any `IDE` of your choice.
 
 
-## Step 2 - Basic OS Installation
+## Step 2 - Basic Project Installation
 
 [macOS]
    1. Install pip - `python -m ensurepip --upgrade`
@@ -38,21 +38,21 @@ This is solution to address the edge detection and tracking of specific objects,
   2. Create a new Pipenv environment in that folder and activate that environment - `pipenv shell`
 
 ## Step 4 - Project Dependencies Installations
-  1. install dependencies using   `pipenv install` or `pipenv run pip3 install -r requirements.txt`
+  1. install dependencies using  `pipenv run pip3 install -r requirements.txt` or `pipenv install`
 
 ## Step 5 - Running Project
-  1. Confirm your current working directory is `object_tracking_yolov5_deepsort`
+  1. Confirm you are in your current working directory - `object_tracking_yolov5_deepsort`
   2. Activate the environment using the command  `pipenv shell`
   3. Run the app using the command `streamlit run Home.py` or `reset && streamlit run Home.py`
 
-Note: please upon first run, project will download model weight which would then be saved in this path `./model_wight`, also note that this download process might take few seconds.
+Please Note: Upon first run, project will download model weight which would then be saved in this path `./model_weight`, also note that this download process might take few seconds.
 
-Once project started running you will have a web interface pop-up, In case you do not see a pop-up check you terminal to see the  localhost and port in this format    
-`Local URL: http://localhost:port or Network URL: http://host:port` copy any one of them and paste in your browser.
+Once project starts running you will have a web interface pop-up, In case you do not see a pop-up check you terminal to see the  localhost and port in this format    
+`Local URL: http://localhost:port or Network URL: http://host:port` copy any one of them and paste in your browser. Once ui is loaded, ui will load model unto backend upon first interaction.
 
 ![alt text](./static_files/Screenshot%20from%202022-12-03%2001-17-41.png)
 
-This is an example of what to expect when project starts running.
+This is an example of what to expect when project starts running. Do note, that by the default the run checkbox is turned off, you have to hit the `Run solution` checkbox to get the prediction running. Also you have option to test with default image and video  files, load your prefered image and video file or just run the solution in real time, using attached web cam if available.
 
 ![alt text](./static_files/Screenshot%20from%202022-12-03%2001-56-27.png)       ![alt text](./static_files/Screenshot%20from%202022-12-03%2002-02-04.png)
 
@@ -63,7 +63,7 @@ This is an example of what to expect when project starts running.
   3. While program is running, you should see bounding box information displayed on the image, also tracking information are displayed below the image.
 
 ## Step 7 - Use case section and answer.
-  1. Once you have succesfully ran the above section, You should also checkout the `Use case questoin` section on the UI, It answer various, simple questions about the system implementation and edge cases.
+  1. Once you have succesfully ran the above sections, You should also checkout the `Use case questoin` section on the UI, It answers various simple questions relating to the general system implementation and solution edge cases.
 
 ![alt text](./static_files/Edge%20Device%20Architecture.png)
 
