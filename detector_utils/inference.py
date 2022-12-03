@@ -59,9 +59,10 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
         default_test_img = write_input_to_canvas.checkbox("Use Default Test Image", True)
     elif input_type in ["Video"]:
         video_file_buff = write_input_to_canvas.file_uploader("Upload a Video File", type=["mp4", "mov", "avi", "asf","m4v"])
-        default_test_vid = write_input_to_canvas.checkbox("Use Default Test Video", True)
+        default_test_vid = write_input_to_canvas.checkbox("Use Default Test Video", True)        
 
     inputLocationImg = write_output_to_canvas.sidebar.empty()
+    inputLocationImg.image([])
     outputLocation = write_output_to_canvas.empty()
     outputDataframeLocation = write_output_to_canvas.empty()
     display_input_file = st.sidebar.checkbox("Show Input", False)
@@ -70,7 +71,8 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
     # Run detection and display 
     if input_type=="Image":
         deepsort_memory = detector._init_tracker()
-        inputLocationImg = write_output_to_canvas.sidebar.empty()
+        # inputLocationImg = write_output_to_canvas.sidebar.empty()
+        inputLocationImg.image([])
 
         if image_file_buff or default_test_img:
             if image_file_buff:
@@ -85,14 +87,13 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
               
             if perform_inference and detector:
                 image_with_boxes,deepsort_memory, detection_time, tracking_time = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
-                frame2 = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
+                image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
                 if display_input_file:
                     inputLocationImg.image(img)    
-                outputLocation.image(frame2)
-                data = pd.DataFrame(deepsort_memory.results["class_metric"])
-                
-                data_fields = outputDataframeLocation.columns(2)
+                outputLocation.image(image_with_boxes)
                 try:
+                    data = pd.DataFrame(deepsort_memory.results["class_metric"])
+                    data_fields = outputDataframeLocation.columns(2)
                     data_fields[0].dataframe(data=data.loc['class_count'])
                     data_fields[1].dataframe(data=data.loc['location_unique_id'])
                 except:
@@ -101,6 +102,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
     if input_type in ["Video", "Web Cam 1"] and perform_inference:
         file_name = None
         if input_type in ["Video"]:
+            inputLocationImg.image([])
             if video_file_buff:
                 tfile = tempfile.NamedTemporaryFile(delete=False)
                 tfile.write(video_file_buff.read())
@@ -108,10 +110,12 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
             elif default_test_vid:
                 file_name = default_vid_path
         if input_type in ["Web Cam 1"]:
+            inputLocationImg.image([])
             file_name = 0
 
         # Run detection
-        inputLocationImg = write_output_to_canvas.sidebar.empty()
+        # inputLocationImg = write_output_to_canvas.sidebar.empty()
+        # inputLocationImg.image([])
             
         if file_name != None or file_name==0:
             deepsort_memory = detector._init_tracker()
@@ -126,12 +130,12 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                 image_with_boxes,deepsort_memory, detection_time, tracking_time = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
                 image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
                 if display_input_file:
-                    inputLocationImg.image(image)
+                    inputLocationImg.image(frame2)
                 outputLocation.image(image_with_boxes)
 
-                data = pd.DataFrame(deepsort_memory.results["class_metric"])
-                data_fields = outputDataframeLocation.columns(2)
                 try:
+                    data = pd.DataFrame(deepsort_memory.results["class_metric"])
+                    data_fields = outputDataframeLocation.columns(2)
                     data_fields[0].dataframe(data=data.loc['class_count'])
                     data_fields[1].dataframe(data=data.loc['location_unique_id'])
                 except:
