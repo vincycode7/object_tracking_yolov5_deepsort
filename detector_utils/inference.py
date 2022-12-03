@@ -109,10 +109,10 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                 if perform_inference and detector:
                     image = np.asarray(frame)
                 image_with_boxes,deepsort_memory, detection_time, tracking_time = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
-                frame2 = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
+                image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
                 if display_input_file:
-                    inputLocationImg.image(frame2)
-                outputLocation.image(frame2)
+                    inputLocationImg.image(image)
+                outputLocation.image(image_with_boxes)
 
                 data = pd.DataFrame(deepsort_memory.results["class_metric"])
                 data_fields = outputDataframeLocation.columns(2)
