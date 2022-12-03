@@ -3,7 +3,6 @@ import numpy as np
 import streamlit as st
 from PIL import Image, ImageOps
 from detector_utils.detector import YoloObjectTrackerFrame
-import imageio
 import pandas as pd
 
 @st.cache
@@ -40,7 +39,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
     
     # Set default values
     default_img_path= "static_files/test_image.jpg" #"static_files/JPEG_20221017_084112_6779959420174114919.jpg" 
-    default_vid_path="static_files/test_video.mp4.mp4"
+    default_vid_path="static_files/test_video.mp4"
 
     # Get inputs
     if input_type=="Image":
@@ -152,5 +151,8 @@ def inference():
 
     # Display input and output data
     process_input_feed(write_input_to_canvas=st.sidebar, input_type=input_type, write_output_to_canvas=st, names=names, detector=model, confidence=confidence, perform_inference=perform_inference,iou=iou)
+    st.markdown("###### - **The `Class Counts` are the unique object counts across frames without duplicates.**")
+    st.markdown("###### - **The `Location Unique Ids`, is a one-on-one between values assigned to unique objects and values used for representation on the image, deepsort values as key while representation value as value.**")
+
 
 # inference()
