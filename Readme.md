@@ -3,7 +3,7 @@
 
 ## Step 0 - General System overview
 
-![alt text]('static_files/General System Architecture.png')
+![General System overview](./static_files/General%20System%20Architecture.png)
 
 This is solution to address the edge detection and tracking of specific objects, for company X, The general architecture highlights the movement of optimized ml model downloaded from the server to edge  device while inference continues on edge device, It also highlight cases where data feedback are gotten to further train model, while this can pose some serious privacy issue, it is the duty of ml engineers to cub that in their system implementation by using different masking technique on the data before sending to the server.
 
@@ -50,7 +50,7 @@ Note: please upon first run, project will download model weight which would then
 Once project started running you will have a web interface pop-up, In case you do not see a pop-up check you terminal to see the  localhost and port in this format    
 `Local URL: http://localhost:port or Network URL: http://host:port` copy any one of them and paste in your browser.
 
-![alt text](static_files/Screenshot from 2022-12-03 01-17-41.png)
+![alt text](./static_files/Screenshot%20from%202022-12-03%2001-17-41.png)
 
 This is an example of what to expect when project starts running.
 
@@ -62,7 +62,7 @@ This is an example of what to expect when project starts running.
 ## Step 7 - Use case section and answer.
   1. Once you have succesfully ran the above section, You should also checkout the `Use case questoin` section on the UI, It answer various, simple questions about the system implementation and edge cases.
 
-![alt text](static_files/static_files/Edge Device Architecture.png)
+![alt text](./static_files/Edge%20Device%20Architecture.png)
 
 An High level description of system implementation on an edge device.
 
