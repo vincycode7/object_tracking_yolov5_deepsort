@@ -14,14 +14,12 @@ deepsort_memory = None
 
 def getAvaillableCams():
     # start from index one and loops till all cameras are picked
-    max_cam_port = 5
+    max_cam_port = 10
     arr = []
     
     for each_index in range(max_cam_port):
         try:
             cap = cv2.VideoCapture(each_index)
-            print(f"index: {each_index}")
-            print(cap)
             if cap.isOpened():
                 arr.append(each_index)
             cap.release()
@@ -136,7 +134,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
         # Run detection
         if file_name != None:
             deepsort_memory = detector._init_tracker()
-            inputLocationImg = write_output_to_canvas.sidebar.empty()
+            # inputLocationImg = write_output_to_canvas.sidebar.empty()
             multi_input = cv2.VideoCapture(file_name)
 
             while True:
@@ -200,7 +198,7 @@ def inference():
 
     process_input_feed(write_input_to_canvas=st.sidebar, input_type=input_type, write_output_to_canvas=st, names=names, detector=model, confidence=confidence, perform_inference=perform_inference,iou=iou)
     perform_inference = False
-    
+
     # Display input and output data
     st.markdown("###### - **The `Class Counts` are the unique object counts across frames without duplicates.**")
     st.markdown("###### - **The `Location Unique Ids`, is a one-on-one between values assigned to unique objects and values used for representation on the image, deepsort values as key while representation value as value.**")
