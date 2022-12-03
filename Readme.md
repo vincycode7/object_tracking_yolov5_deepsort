@@ -62,9 +62,6 @@ This is an example of what to expect when project starts running. Do note, that 
   2. Once you have viewed all available options, Toggle the `Run Solution` checkbox to either run or stop running the solution.
   3. While program is running, you should see bounding box information displayed on the image, also tracking information are displayed below the image.
 
-## Step 7 - Use case section and answer.
-  1. Once you have succesfully ran the above sections, You should also checkout the `Use case questoin` section on the UI, It answers various simple questions relating to the general system implementation and solution edge cases.
-
 ![alt text](./static_files/Edge%20Device%20Architecture.png)
 
 An High level description of system implementation on an edge device.
