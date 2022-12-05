@@ -44,12 +44,12 @@ This is solution to address the edge detection and tracking of specific objects 
 
 Please Note: Upon first run, project will download model weight which would then be saved in this path `./model_weight`, also note that this download process might take few seconds.
 
-![UI Message while model is downloading model checkpoint of loading from previously downloaded checkpoint](./static_files/Screenshot%20from%202022-12-05%2011-03-01.png)
+![UI Message while model is downloading model checkpoint of loading from previously downloaded checkpoint](./static_files/Screenshot%20from%202022-12-05%2012-23-30.png)
 
 Once project starts running you will have a web interface pop-up, In case you do not see a pop-up check you terminal to see the  localhost and port in this format    
 `Local URL: http://localhost:port or Network URL: http://host:port` copy any one of them and paste in your browser. Once ui is loaded, ui will load model unto backend upon first interaction.
 
-![alt text](./static_files/Screenshot%20from%202022-12-03%2001-17-41.png)
+![alt text](./static_files/Screenshot%20from%202022-12-05%2012-22-40.png)
 
 This is an example of what to expect when project starts running. Do note, that by the default the run checkbox is turned off, you have to hit the `Run solution` checkbox to get the prediction running. Also you have option to test with default image and video  files, load your prefered image and video file or just run the solution in real time, using attached web cam if available.
 
