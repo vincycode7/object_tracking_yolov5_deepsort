@@ -18,9 +18,6 @@ def main():
     st.set_page_config(
         page_title="Home",
 )
-    """
-       Starting function of the entire project.     
-    """
     st.markdown("### Welcome to InstaDeep Detection and Tracking Presentation (YOLOv5s)", True)
     inference()
 
