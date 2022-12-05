@@ -1,13 +1,3 @@
-
-
-[![Python Versions]](https://www.python.org/doc/versions/)
-
----
-| [**General System Overview**](# Step 0 - General System overview-)
-| [**Installation**](# Step 1 - Get Codebase to local workspace-)
-| [**Quickstart**](#Step 5 - Running Project-)
-
-
 ## Step 0 - General System overview
 
 ![General System overview](./static_files/General%20System%20Architecture.png)
