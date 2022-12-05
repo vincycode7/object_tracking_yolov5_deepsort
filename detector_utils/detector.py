@@ -196,53 +196,63 @@ class YoloObjectTrackerFrame(YoloBaseDetector):
         if not isinstance(bbox_xywh, type(None)):
             # ****************************** deepsort ****************************
             # print("/n/n/n/nIn sort")
-            loop_times = 3 if deepsort_memory.sequence <= 1 else 1
-            for _ in range(loop_times):
-                outputs = deepsort_memory.update(bbox_xywh[:, :4], confs, im0)
-                deepsort_memory.sequence = deepsort_memory.sequence+ 1
+            # loop_times = 1 if deepsort_memory.sequence <= 1 else 1
+            # for _ in range(loop_times):
+            outputs = deepsort_memory.update(bbox_xywh[:, :4], confs, im0)
+            deepsort_memory.sequence = deepsort_memory.sequence+ 1
             outputs = torch.Tensor(outputs).float()
             # (#ID, 5) x1,y1,x2,y2,track_ID
         else:
             outputs = torch.zeros((0, 5)).float()
 
+        # print(f"deepsort output : {outputs}")
+        if outputs.shape[0] == 0 and not isinstance(bbox_xywh, type(None)):
+            outputs = xywh2xyxy(bbox_xywh[:, :4])
+            tracking_ids = list(range(bbox_xywh.shape[0]))
+        else:
+            tracking_ids = list(outputs[:,-1])
+
         if not isinstance(type(outputs), type(None)) and outputs.shape[0] != 0:
-            #assign unique id to unique classes
-            # loop through all detectoin
-            # get their class
-            # check if their id is in the class id
-            # if not increment class
-            # add unique id to class
-            # assign new unique id to elemete for printing
+        #     #assign unique id to unique classes
+        #     # loop through all detectoin
+        #     # get their class
+        #     # check if their id is in the class id
+        #     # if not increment class
+        #     # add unique id to class
+        #     # assign new unique id to elemete for printing
             class_names = []
+            object_tracker_ids = []
             for each_idx in range(min(classes.shape[0], outputs.shape[0])):
-                # print(self.key_to_string)
+        #         # print(self.key_to_string)
                 class_name = self.key_to_string.get(str(int(classes[each_idx])))
-                tracker_id = outputs[:,-1][each_idx]
+                tracker_id = tracking_ids[each_idx]
                 class_metric = deepsort_memory.results["class_metric"].get(class_name, {})
                 box_metric_key_value = deepsort_memory.results.get("box_metric_key_value",[])
 
-                # create class metric instance for current object if not available
+        #         # create class metric instance for current object if not available
                 if class_metric == {}:
                     deepsort_memory.results["class_metric"][class_name] = {'class_count': 0, 'location_unique_id' : {}}           
 
-                # check if current object id is in class detected key
+        #         # check if current object id is in class detected key
                 if int(tracker_id) not in deepsort_memory.results["class_metric"][class_name].get('location_unique_id',{}).keys():
                     if deepsort_memory.results["class_metric"][class_name].get("location_unique_id",{})=={}:
                         deepsort_memory.results["class_metric"][class_name]["location_unique_id"] = {}
 
                     deepsort_memory.results["class_metric"][class_name]["location_unique_id"][int(tracker_id)] = deepsort_memory.results["class_metric"][class_name]['class_count']
-                    # deepsort_memory.results["class_metric"][class_name]["class_value_key"][deepsort_memory.results["class_metric"][class_name]['class_count']] = tracker_id
+        #             # deepsort_memory.results["class_metric"][class_name]["class_value_key"][deepsort_memory.results["class_metric"][class_name]['class_count']] = tracker_id
                     deepsort_memory.results["class_metric"][class_name]['class_count'] += 1
                 
-                outputs[each_idx,-1] = deepsort_memory.results["class_metric"][class_name]["location_unique_id"][int(tracker_id)]
+                # outputs[each_idx,-1] = deepsort_memory.results["class_metric"][class_name]["location_unique_id"][int(tracker_id)]
+                object_tracker_ids.append(deepsort_memory.results["class_metric"][class_name]["location_unique_id"][int(tracker_id)])
                 class_names.append(class_name)
             minby = min(classes.shape[0], outputs.shape[0])
-            im0 = self.draw_boxes(im0, outputs[:minby, :4], outputs[:minby,-1], classes=class_names)  # BGR
+            im0 = self.draw_boxes(im0, outputs[:minby, :4], object_tracker_ids[:minby], classes=class_names)  # BGR
 
         t3 = time.time()
         detection_time = t2-t1
         tracking_time = t3-t2
-        return im0,deepsort_memory, detection_time, tracking_time
+        # return im0,deepsort_memory, detection_time, tracking_time
+        return im0, deepsort_memory, detection_time, tracking_time
 
 
 

@@ -1,10 +1,10 @@
-## Step 0 - General System overview
+## General System overview
 
 ![General System overview](./static_files/General%20System%20Architecture.png)
 
 This is solution to address the edge detection and tracking of specific objects for an imaginary company X, The general system architecture highlights the movement of optimized ml model downloaded from the server on to the edge device while inference is done on edge the device, It also highlights cases where data feedback are gotten to further train model. This process of data feedback to the server can pose a serious privacy issue, it is the duty of the ml engineers to privent such privacy issuess in their system implementation by using different masking techniques on the data before sending to the server.
 
-## Step 1 - Get Codebase to local workspace.
+## Get Codebase to local workspace.
 
 [Terminal-Version]
    1. Open a `terminal` or `command prompt` 
@@ -18,7 +18,15 @@ This is solution to address the edge detection and tracking of specific objects 
    4. Once download is complete, Unzip into a folder and open the parent folder `object_tracking_yolov5_deepsort` with any `IDE` of your choice.
 
 
-## Step 2 - Basic Project Installation
+## Dependency Installation and Running Project (Option 1 - Using Docker)
+  1. Install docker locally
+  2. Build a docker image using the `Dockerfile` by running `sudo docker build -t yolodeepsort:lastest .` or `docker build -t yolodeepsort:lastest .`
+  3. Once build is complete run `sudo docker run -p 8501:8501 yolodeepsort:lastest`
+  4. lastly you go to the url `http://localhost:8501` or `http://host:8501`
+
+
+## Dependency Installation and Running Project (Option 2 - Installing dependencies manually)
+
   1. Install python3
     - visit `https://code.visualstudio.com/docs/python/python-tutorial` for instructions
 
@@ -57,6 +65,8 @@ This is solution to address the edge detection and tracking of specific objects 
   1. Confirm you are in your current working directory - `object_tracking_yolov5_deepsort`
   2. Activate the environment using the command  `pipenv shell`
   3. Run the app using the command `streamlit run Home.py` or `reset && streamlit run Home.py`
+
+
 
 Please Note: Upon first run, project will download model weight which would then be saved in this path `./model_weight`, also note that this download process might take few seconds.
 

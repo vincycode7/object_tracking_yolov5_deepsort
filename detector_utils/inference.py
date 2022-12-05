@@ -137,25 +137,30 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
             # inputLocationImg = write_output_to_canvas.sidebar.empty()
             multi_input = cv2.VideoCapture(file_name)
 
-            while True:
+            while multi_input.isOpened():
                 check, frame = multi_input.read()
-                frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                if check:
+                    # cv2.imshow("Image", frame)
+                    # multi_input.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-                if perform_inference and detector:
-                    image = np.asarray(frame)
-                    image_with_boxes,deepsort_memory, detection_time, tracking_time = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
-                    image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
-                    if display_input_file:
-                        inputLocationImg.image(frame2)
-                    outputLocation.image(image_with_boxes)
+                    if perform_inference and detector:
+                        image = np.asarray(frame)
+                        image_with_boxes,deepsort_memory, detection_time, tracking_time = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
+                        image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
+                        if display_input_file:
+                            inputLocationImg.image(frame2)
+                        outputLocation.image(image_with_boxes)
 
-                    try:
-                        data = pd.DataFrame(deepsort_memory.results["class_metric"])
-                        data_fields = outputDataframeLocation.columns(2)
-                        data_fields[0].dataframe(data=data.loc['class_count'])
-                        data_fields[1].dataframe(data=data.loc['location_unique_id'])
-                    except:
-                        pass
+                        try:
+                            data = pd.DataFrame(deepsort_memory.results["class_metric"])
+                            data_fields = outputDataframeLocation.columns(2)
+                            data_fields[0].dataframe(data=data.loc['class_count'])
+                            data_fields[1].dataframe(data=data.loc['location_unique_id'])
+                        except:
+                            pass
+                else:
+                    outputLocation.write('No video')
             
             # Closes all the frames
             cv2.destroyAllWindows()
