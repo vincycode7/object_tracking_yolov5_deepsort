@@ -168,7 +168,7 @@ def inference():
         This function is responsible for getting user input from frontend, passing it to
         the backend functions and methods and then writing the result back to the frontend.
     """
-    # st.markdown("# InstaDeep Detection and Tracking with YOLOv5s")
+    # st.markdown("#Detection and Tracking with YOLOv5s")
     st.markdown("##### Instruction: Set your configuration on the left sidebar panel then toggle the `Run Solution` checkbox below to get started.")
     st.markdown("###### **`Please note, If you are getting a low detection / tracking rate, try changing the confidence threshold on the left side bar.`**")
 

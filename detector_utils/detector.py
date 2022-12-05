@@ -22,7 +22,6 @@ import torch
 import torch.backends.cudnn as cudnn
 
 # Deep sort algorithm
-
 class YoloBaseDetector(object):
     def __init__(self, **kwargs):
         """

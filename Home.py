@@ -18,7 +18,7 @@ def main():
     st.set_page_config(
         page_title="Home",
 )
-    st.markdown("### Welcome to InstaDeep Detection and Tracking Presentation (YOLOv5s)", True)
+    st.markdown("### Welcome to this Object Detection and Tracking Solution (YOLOv5s)", True)
     inference()
 
 main()
