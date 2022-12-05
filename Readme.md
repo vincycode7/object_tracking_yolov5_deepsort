@@ -23,6 +23,7 @@ This is solution to address the edge detection and tracking of specific objects 
     - visit `https://code.visualstudio.com/docs/python/python-tutorial` for instructions
 
   2. Install pip
+    
     [macOS]
       - Install pip - `python -m ensurepip --upgrade`
     
@@ -33,6 +34,7 @@ This is solution to address the edge detection and tracking of specific objects 
       - Visit `https://packaging.python.org/en/latest/tutorials/installing-packages/`
 
   3. Install pipenv
+    
     [macOS]
       - Install pipenv `pip3 install pipenv`
       - Install xcode command line tool - `xcode-select --install`
