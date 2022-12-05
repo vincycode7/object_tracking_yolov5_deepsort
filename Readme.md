@@ -19,15 +19,29 @@ This is solution to address the edge detection and tracking of specific objects 
 
 
 ## Step 2 - Basic Project Installation
+  1. Install python3
+    - visit `https://code.visualstudio.com/docs/python/python-tutorial` for instructions
 
-[macOS]
-   1. Install pip - `python -m ensurepip --upgrade`
-   2. Install pipenv `pip3 install pipenv`
-   3. Install xcode command line tool - `xcode-select --install`
+  2. Install pip
+    [macOS]
+      - Install pip - `python -m ensurepip --upgrade`
+    
+    [Ubuntu]
+      - Install pip - `sudo apt-get install python3-pip`
+    
+    [Windows]
+      - Visit `https://packaging.python.org/en/latest/tutorials/installing-packages/`
 
-[Ubuntu]
-  1. Install pip - `sudo apt-get install python3-pip`
-  2. Install pipenv - `pip3 install pipenv` or `sudo apt install pipenv`
+  3. Install pipenv
+    [macOS]
+      - Install pipenv `pip3 install pipenv`
+      - Install xcode command line tool - `xcode-select --install`
+
+    [Ubuntu]
+      - Install pipenv - `pip3 install pipenv` or `sudo apt install pipenv`
+
+    [Windows]
+      - Install pipenv -  `pip install pipenv`
 
 ## Step 3 - Create and activate an Environment for project
 
@@ -35,7 +49,7 @@ This is solution to address the edge detection and tracking of specific objects 
   2. Create a new Pipenv environment in that folder and activate that environment - `pipenv shell`
 
 ## Step 4 - Project Dependencies Installations
-  1. install dependencies using  `pipenv run pip3 install -r requirements.txt` or `pipenv install`
+  1. install dependencies using  `pipenv run pip3 install -r requirements.txt`
 
 ## Step 5 - Running Project
   1. Confirm you are in your current working directory - `object_tracking_yolov5_deepsort`
