@@ -30,7 +30,7 @@ def getAvaillableCams():
     return arr
 
 # Input component
-def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_to_canvas=None, detector=None, perform_inference=False, confidence=0.40,iou=0.8):
+def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_to_canvas=None, detector=None, perform_inference=False, confidence=0.40,iou=0.8, save_enc_img_feature=False):
     """
         This function is the input function, It accepts different inputs such as output canvas, input canvas
         media input type. It uses this information to request for input from the user, pass that to the 
@@ -45,7 +45,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
     """
     global deepsort_memory
     if deepsort_memory == None:
-        deepsort_memory = detector._init_tracker()
+        deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
 
     # deepsort_memory = [None, None]
     # Pick classes to use during detection
@@ -90,7 +90,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
 
     # Run detection and display 
     if input_type=="Image":
-        deepsort_memory = detector._init_tracker()
+        deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
         # inputLocationImg = write_output_to_canvas.sidebar.empty()
         inputLocationImg.image([])
 
@@ -133,7 +133,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
 
         # Run detection
         if file_name != None:
-            deepsort_memory = detector._init_tracker()
+            deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
             # inputLocationImg = write_output_to_canvas.sidebar.empty()
             multi_input = cv2.VideoCapture(file_name)
 
@@ -190,7 +190,7 @@ def inference():
 
     # Checkbox configuration
     # use_optimized = st.sidebar.checkbox("Use Optimized Model")
-    # save_img = st.sidebar.checkbox("Save Encoded Inputs")
+    save_enc_img_feature = st.sidebar.checkbox("Save Encoded Feature Outputs")
     # run_on_gpu = st.sidebar.checkbox("Run on GPU")
 
     # st.sidebar.markdown("---")
@@ -201,7 +201,7 @@ def inference():
     model = load_model_detector()
     names = list(model.key_to_string.values())
 
-    process_input_feed(write_input_to_canvas=st.sidebar, input_type=input_type, write_output_to_canvas=st, names=names, detector=model, confidence=confidence, perform_inference=perform_inference,iou=iou)
+    process_input_feed(write_input_to_canvas=st.sidebar, input_type=input_type, write_output_to_canvas=st, names=names, detector=model, confidence=confidence, perform_inference=perform_inference,iou=iou,save_enc_img_feature=save_enc_img_feature)
     perform_inference = False
 
     # Display input and output data

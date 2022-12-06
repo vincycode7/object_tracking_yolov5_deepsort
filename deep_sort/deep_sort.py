@@ -6,13 +6,13 @@ from .sort.nn_matching import NearestNeighborDistanceMetric
 from .sort.preprocessing import non_max_suppression
 from .sort.detection import Detection
 from .sort.tracker import Tracker
-
+import hashlib, os
 
 __all__ = ['DeepSort']
 
 
 class DeepSort(object):
-    def __init__(self, model_path, max_dist=0.2, min_confidence=0.3, nms_max_overlap=1.0, max_iou_distance=0.7, max_age=70, n_init=3, nn_budget=100, use_cuda=True):
+    def __init__(self, model_path, max_dist=0.2, min_confidence=0.3, nms_max_overlap=1.0, max_iou_distance=0.7, max_age=70, n_init=3, nn_budget=100, save_features=False, use_cuda=True,save_enc_img_feature=False):
         self.min_confidence = min_confidence
         self.nms_max_overlap = nms_max_overlap
 
@@ -24,6 +24,8 @@ class DeepSort(object):
 
         # tracker maintain a list contains(self.tracks) for each Track object
         self.tracker = Tracker(metric, max_iou_distance=max_iou_distance, max_age=max_age, n_init=n_init)
+        self.save_enc_img_feature = save_enc_img_feature
+        self.save_feature_path = "./outputs/"
 
     def update(self, bbox_xywh, confidences, ori_img):
         # bbox_xywh (#obj,4), [xc,yc, w, h]     bounding box for each person
@@ -39,7 +41,20 @@ class DeepSort(object):
         #  generate detections class object for each person *********************************************************
         # filter object with less confidence
         # each Detection obj maintain the location(bbox_tlwh), confidence(conf), and appearance feature
-        detections = [Detection(bbox_tlwh[i], conf, features[i]) for i,conf in enumerate(confidences) if conf>self.min_confidence]
+        detections = []
+        for i,conf in enumerate(confidences):
+            if conf>self.min_confidence:
+                detections.append(Detection(bbox_tlwh[i], conf, features[i]))
+                if self.save_enc_img_feature:
+                    _hash_ = hashlib.sha1(features[i].data.tobytes()).hexdigest()
+                    _hash = str(_hash_)+".npy"
+                    try:
+                        os.makedirs(self.save_feature_path)
+                    except FileExistsError:
+                            # directory already exists
+                        pass
+                    print(self.save_feature_path+_hash)
+                    np.save(self.save_feature_path+_hash, features[i])
 
         # run on non-maximum supression (useless) *******************************************************************
         boxes = np.array([d.tlwh for d in detections])

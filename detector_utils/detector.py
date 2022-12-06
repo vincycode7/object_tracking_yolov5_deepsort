@@ -174,9 +174,9 @@ class YoloObjectTrackerFrame(YoloBaseDetector):
         self.cfg.merge_from_file(config_file=self.cfg_path) 
         
 
-    def _init_tracker(self, max_cosine_distance = 0.7,nn_budget = None, model_filename = 'model_data/mars-small128.pb'):
+    def _init_tracker(self, max_cosine_distance = 0.7,nn_budget = None, model_filename = 'model_data/mars-small128.pb',save_enc_img_feature=False):
         #initialize deep sort object
-        deepsort = build_tracker(self.cfg, use_cuda=self.use_cuda)
+        deepsort = build_tracker(self.cfg, use_cuda=self.use_cuda,save_enc_img_feature=save_enc_img_feature)
         deepsort.sequence = 0
         deepsort.results = {'class_metric':{}, 'box_metric':{}}
         return deepsort
