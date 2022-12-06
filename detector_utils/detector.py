@@ -196,10 +196,10 @@ class YoloObjectTrackerFrame(YoloBaseDetector):
         if not isinstance(bbox_xywh, type(None)):
             # ****************************** deepsort ****************************
             # print("/n/n/n/nIn sort")
-            # loop_times = 1 if deepsort_memory.sequence <= 1 else 1
-            # for _ in range(loop_times):
-            outputs = deepsort_memory.update(bbox_xywh[:, :4], confs, im0)
-            deepsort_memory.sequence = deepsort_memory.sequence+ 1
+            loop_times = 3 if deepsort_memory.sequence <= 1 else 1
+            for _ in range(loop_times):
+                outputs = deepsort_memory.update(bbox_xywh[:, :4], confs, im0)
+                deepsort_memory.sequence = deepsort_memory.sequence+ 1
             outputs = torch.Tensor(outputs).float()
             # (#ID, 5) x1,y1,x2,y2,track_ID
         else:

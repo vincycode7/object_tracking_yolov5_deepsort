@@ -21,8 +21,9 @@ This is solution to address the edge detection and tracking of specific objects 
 ## Dependency Installation and Running Project (Option 1 - Using Docker)
   1. Install docker locally
   2. Build a docker image using the `Dockerfile` by running `sudo docker build -t yolodeepsort:lastest .` or `docker build -t yolodeepsort:lastest .`
-  3. Once build is complete run `sudo docker run -p 8501:8501 yolodeepsort:lastest`
+  3. Once build is complete run using `sudo docker run -p 8501:8501 yolodeepsort:lastest` or `sudo docker run --device=/dev/video0  -p 8501:8501 yolodeepsort:lastest` on Ubuntu to grant access to the webcam.
   4. lastly you go to the url `http://localhost:8501` or `http://host:8501`
+
 
 
 ## Dependency Installation and Running Project (Option 2 - Installing dependencies manually)
@@ -53,15 +54,15 @@ This is solution to address the edge detection and tracking of specific objects 
     [Windows]
       - Install pipenv -  `pip install pipenv`
 
-## Step 3 - Create and activate an Environment for project
+#### Step 1 - Create and activate an Environment for project
 
   1. Navigate to your project folder `cd object_tracking_yolov5_deepsort`
   2. Create a new Pipenv environment in that folder and activate that environment - `pipenv shell`
 
-## Step 4 - Project Dependencies Installations
+#### Step 2 - Project Dependencies Installations
   1. install dependencies using  `pipenv run pip3 install -r requirements.txt`
 
-## Step 5 - Running Project
+#### Step 3 - Running Project
   1. Confirm you are in your current working directory - `object_tracking_yolov5_deepsort`
   2. Activate the environment using the command  `pipenv shell`
   3. Run the app using the command `streamlit run Home.py` or `reset && streamlit run Home.py`
@@ -82,7 +83,7 @@ This is an example of what to expect when project starts running. Do note, that 
 ![alt text](./static_files/Screenshot%20from%202022-12-03%2001-56-27.png)       ![alt text](./static_files/Screenshot%20from%202022-12-03%2002-02-04.png)
 
 
-## Step 6 - Interacting with the User Interface(UI).
+## Interacting with the User Interface(UI).
   1. On the UI you will see difference configuration options on the left panel to help set thresholds and load input data, do take a look at all available options before going to item `2` below.
   2. Once you have viewed all available options, Toggle the `Run Solution` checkbox to either run or stop running the solution.
   3. While program is running, you should see bounding box information displayed on the image, also tracking information are displayed below the image.
