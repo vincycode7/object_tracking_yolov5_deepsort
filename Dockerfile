@@ -13,9 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-opencv \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-EXPOSE 8501
+EXPOSE 80
 COPY . /app
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
-ENTRYPOINT [ "streamlit","run" ]
-CMD ["Home.py"]
+ENTRYPOINT ["streamlit", "run", "Home.py", "--server.port=80", "--server.address=0.0.0.0"]
+# CMD ["Home.py","--server.address=0.0.0.0","--server.port=8501" ]
