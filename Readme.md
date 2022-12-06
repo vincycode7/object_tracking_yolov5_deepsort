@@ -24,7 +24,7 @@ This is solution to address the edge detection and tracking of specific objects 
   3. Once build is complete run using `sudo docker run -p 8501:8501 yolodeepsort:lastest`
   4. lastly you go to the url `http://localhost:8501` or `http://host:8501`
   5. [Optional] if you need to connect to webcam for object detection image input use command `sudo docker run --device=/dev/video0  -p 8501:8501 yolodeepsort:lastest` on Ubuntu to grant access to the webcam. Note, you can call the `--device=path_to_device` multiple times if you have multiple web cams and they will be automatically displayed in UI, where `path_to_device` is where your device is located on your local machine.
-  5. [Optional] If you need to save the encoded output from detection, first run `pwd` in the terminal to get the absolute path of your current directory then use this command `sudo docker run --device=/dev/video0 -v absoslute_path_to_your_current_working_directory/outputs:/app/outputs -p 8501:8501 yolodeepsort:lastest` to run docker, replace `absoslute_path_to_your_current_working_directory` with the output you get from running `pwd` in the terminal
+  5. [Optional] If you need to save the encoded output from detection, first run `pwd` in the terminal to get the absolute path of your current directory then use this command `sudo docker run --device=/dev/video0 -v absoslute_path_to_your_current_working_directory:/app -p 8501:8501 yolodeepsort:lastest` to run docker, replace `absoslute_path_to_your_current_working_directory` with the output you get from running `pwd` in the terminal
 
 ## Dependency Installation and Running Project (Option 2 - Installing dependencies manually)
 
