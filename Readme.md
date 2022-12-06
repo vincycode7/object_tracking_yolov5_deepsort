@@ -65,7 +65,7 @@ This is solution to address the edge detection and tracking of specific objects 
 #### Step 3 - Running Project
   1. Confirm you are in your current working directory - `object_tracking_yolov5_deepsort`
   2. Activate the environment using the command  `pipenv shell`
-  3. Run the app using the command `streamlit run Home.py` or `reset && streamlit run Home.py`
+  3. Run the app using the command `streamlit run Home.py --server.address=localhost` or `reset && streamlit run Home.py --server.address=localhost`
 
 
 
@@ -74,7 +74,7 @@ Please Note: Upon first run, project will download model weight which would then
 ![UI Message while model is downloading model checkpoint of loading from previously downloaded checkpoint](./static_files/Screenshot%20from%202022-12-05%2012-23-30.png)
 
 Once project starts running you will have a web interface pop-up, In case you do not see a pop-up check you terminal to see the  localhost and port in this format    
-`Local URL: http://localhost:port or Network URL: http://host:port` copy any one of them and paste in your browser. Once ui is loaded, ui will load model unto backend upon first interaction.
+`Local URL: http://localhost:port or Network URL: http://0.0.0.0:port` copy any one of them and paste in your browser. Once ui is loaded, ui will load model unto backend upon first interaction.
 
 ![alt text](./static_files/Screenshot%20from%202022-12-05%2012-22-40.png)
 
