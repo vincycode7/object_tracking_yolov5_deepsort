@@ -53,6 +53,7 @@ class DeepSort(object):
                     except FileExistsError:
                             # directory already exists
                         pass
+                    print(self.save_feature_path+_hash)
                     np.save(self.save_feature_path+_hash, features[i])
 
         # run on non-maximum supression (useless) *******************************************************************
