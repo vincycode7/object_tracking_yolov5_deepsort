@@ -184,8 +184,8 @@ def inference():
     st.markdown(f"###### Status: {Solution_state}.")
     st.sidebar.markdown(f"## Configuration")
     st.sidebar.markdown("---")
-    confidence = st.sidebar.slider("""**Prediction Confidence Threshold** [Only objects with `%` score greater than or equal to confidence threshold will be  picked]""", min_value=0.0, max_value=1.0, value=0.35)
-    iou = st.sidebar.slider("""**Intersection Over Union Threshold** [This threshold specifies the likelihood of a detected object present in two images]""", min_value=0.0, max_value=1.0, value=0.30)
+    confidence = st.sidebar.slider("""**Prediction Confidence Threshold** [This threshold specifies the accepted probability value of a box belonging to a class.]""", min_value=0.0, max_value=1.0, value=0.35)
+    iou = st.sidebar.slider("""**Intersection Over Union Threshold** [This threshold specifies the accepted probability value of overlap between two detected bounding boxes.]""", min_value=0.0, max_value=1.0, value=0.30)
     st.sidebar.markdown("---") 
 
     # Checkbox configuration
