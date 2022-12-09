@@ -2,16 +2,16 @@
 
 ![General System overview](./static_files/General%20System%20Architecture.png)
 
-This is solution to address the edge detection and tracking of specific objects for an imaginary company X, The general system architecture highlights the movement of optimized ml model downloaded from the server on to the edge device while inference is done on edge the device, It also highlights cases where data feedback are gotten to further train model. This process of data feedback to the server can pose a serious privacy issue, it is the duty of the ml engineers to privent such privacy issuess in their system implementation by using different masking techniques on the data before sending to the server.
+This is solution to address the edge detection and tracking of specific objects for an imaginary company X, The general system architecture highlights the movement of optimized ml model downloaded from the server on to the edge device while inference is done on the edge device, It also highlights cases where data feedback are gotten to further train model. This process of data feedback to the server can pose a serious privacy issue, it is the duty of the ml engineers to prevent such privacy issuess in their system implementation by using different masking techniques on the data before sending to the server.
 
-## Get Codebase to local workspace.
+## Mount Codebase to local workspace.
 
-[Terminal-Version]
+[Terminal-Version](Option 1)
    1. Open a `terminal` or `command prompt` 
    2. Run `git clone https://github.com/vincycode7/object_tracking_yolov5_deepsort.git`
    3. Once download is complete, change directory into the current working directory using `cd object_tracking_yolov5_deepsort/` as this directory contains all the code you need.
 
-[Zip-version]
+[Zip-version](Option 2)
    1. Navigate to the `<> Code` Dropdown
    2. Click to view options available
    3. Click on the download dropdown to download a zipped file of all the code.
@@ -28,8 +28,12 @@ This is solution to address the edge detection and tracking of specific objects 
 
 ## Dependency Installation and Running Project (Option 2 - Installing dependencies manually)
 
+#### Step 1 Install python
+
   1. Install python3
     - visit `https://code.visualstudio.com/docs/python/python-tutorial` for instructions
+
+#### Step 2 Install pip
 
   2. Install pip
     
@@ -41,6 +45,8 @@ This is solution to address the edge detection and tracking of specific objects 
     
     [Windows]
       - Visit `https://packaging.python.org/en/latest/tutorials/installing-packages/`
+
+#### Step 3 Install pipenv
 
   3. Install pipenv
     
@@ -54,20 +60,21 @@ This is solution to address the edge detection and tracking of specific objects 
     [Windows]
       - Install pipenv -  `pip install pipenv`
 
-#### Step 1 - Create and activate an Environment for project
+#### Step 4 - Create and activate an Environment for project
 
   1. Navigate to your project folder `cd object_tracking_yolov5_deepsort`
   2. Create a new Pipenv environment in that folder and activate that environment - `pipenv shell`
 
-#### Step 2 - Project Dependencies Installations
+#### Step 5 - Project Dependencies Installations
   1. install dependencies using  `pipenv run pip3 install -r requirements.txt`
 
-#### Step 3 - Running Project
+#### Step 6 - Running Project
   1. Confirm you are in your current working directory - `object_tracking_yolov5_deepsort`
   2. Activate the environment using the command  `pipenv shell`
   3. Run the app using the command `streamlit run Home.py --server.address=localhost` or `reset && streamlit run Home.py --server.address=localhost`
 
 
+## General Note
 
 Please Note: Upon first run, project will download model weight which would then be saved in this path `./model_weight`, also note that this download process might take few seconds.
 

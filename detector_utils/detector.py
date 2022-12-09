@@ -32,7 +32,7 @@ class YoloBaseDetector(object):
         self.kwargs = kwargs
         self.img_size = kwargs.get('img_size', 640)
         self.device = select_device(kwargs.get('device', 'cpu')) # 'cuda device, i.e. 0 or 0,1,2,3 or cpu'
-        self.use_cuda = self.device.type != 'cpu' and torch.cuda.is_available()
+        self.use_cuda = self.device.type == 'cpu' and torch.cuda.is_available()
         self.half = self.device.type != 'cpu'  # half precision only supported on CUDA
         self.load_class(**kwargs)
         self.load_model(**kwargs)
