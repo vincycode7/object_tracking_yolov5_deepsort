@@ -2,7 +2,13 @@
 
 ![General System overview](./static_files/General%20System%20Architecture.png)
 
-This is solution to address the edge detection and tracking of specific objects for an imaginary company X, The general system architecture highlights the movement of optimized ml model downloaded from the server on to the edge device while inference is done on the edge device, It also highlights cases where data feedback are gotten to further train model. This process of data feedback to the server can pose a serious privacy issue, it is the duty of the ml engineers to prevent such privacy issuess in their system implementation by using different masking techniques on the data before sending to the server.
+This is a solution to address the edge detection and tracking of specific objects for an imaginary company X, The general system architecture highlights the movement of optimized ml model downloaded from the server on to the edge device while inference is done on the edge device, It also highlights cases where data feedback are gotten to further train model. This process of data feedback to the server can pose a serious privacy issue, it is the duty of the ml engineers to prevent such privacy issuess in their system implementation by using different masking techniques on the data before sending to the server.
+
+## An High level description of system implementation on an edge device.
+
+![alt text](./static_files/Edge%20Device%20Architecture.png)
+
+How does this solution work. Basically, Image, Video or Camera Inputs are gotten from a streamlit frontend which is then fed into a pytorch Yolo backend which then resize the input if necessary, convert color channel from BGR to RGB and then passes processed input through yolo model, Once this is completed, the result is then fed into a deepsort tracker which extras each image feature for each detected object, assigns integer values to each of the detected object and then tracks each detected object across frame. The final output is then sent back to the UI for Display.
 
 ## Mount Codebase to local workspace.
 
@@ -94,10 +100,6 @@ This is an example of what to expect when project starts running. Do note, that 
   1. On the UI you will see difference configuration options on the left panel to help set thresholds and load input data, do take a look at all available options before going to item `2` below.
   2. Once you have viewed all available options, Toggle the `Run Solution` checkbox to either run or stop running the solution.
   3. While program is running, you should see bounding box information displayed on the image, also tracking information are displayed below the image.
-
-![alt text](./static_files/Edge%20Device%20Architecture.png)
-
-An High level description of system implementation on an edge device.
 
 ## Reference
 1) [object_tracking_yolov5_deepsort](https://github.com/vincycode7/object_tracking_yolov5_deepsort)
