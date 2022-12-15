@@ -6,8 +6,8 @@ from detector_utils.detector import YoloObjectTrackerFrame
 import pandas as pd
 
 @st.cache
-def load_model_detector():
-    model =  YoloObjectTrackerFrame()
+def load_model_detector(**kwargs):
+    model =  YoloObjectTrackerFrame(**kwargs)
     return model
 global deepsort_memory
 deepsort_memory = None
@@ -106,7 +106,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                 image = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
               
             if perform_inference and detector:
-                image_with_boxes,deepsort_memory, detection_time, tracking_time = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
+                image_with_boxes,deepsort_memory = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
                 image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
                 if display_input_file:
                     inputLocationImg.image(img)    
@@ -115,7 +115,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                     data = pd.DataFrame(deepsort_memory.results["class_metric"])
                     data_fields = outputDataframeLocation.columns(2)
                     data_fields[0].dataframe(data=data.loc['class_count'])
-                    data_fields[1].dataframe(data=data.loc['location_unique_id'])
+                    data_fields[1].dataframe(data=data.loc['location_unique_id'].astype('str'))
                 except:
                     pass
 
@@ -142,13 +142,12 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                 if check:
                     # cv2.imshow("Image", frame)
                     # multi_input.set(cv2.CAP_PROP_POS_FRAMES, 0)
-                    frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
                     if perform_inference and detector:
                         image = np.asarray(frame)
-                        image_with_boxes,deepsort_memory, detection_time, tracking_time = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
+                        image_with_boxes,deepsort_memory = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
                         image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
                         if display_input_file:
+                            frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                             inputLocationImg.image(frame2)
                         outputLocation.image(image_with_boxes)
 
@@ -156,7 +155,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                             data = pd.DataFrame(deepsort_memory.results["class_metric"])
                             data_fields = outputDataframeLocation.columns(2)
                             data_fields[0].dataframe(data=data.loc['class_count'])
-                            data_fields[1].dataframe(data=data.loc['location_unique_id'])
+                            data_fields[1].dataframe(data=data.loc['location_unique_id'].astype('str'))
                         except:
                             pass
                 else:
@@ -184,6 +183,7 @@ def inference():
     st.markdown(f"###### Status: {Solution_state}.")
     st.sidebar.markdown(f"## Configuration")
     st.sidebar.markdown("---")
+    model_size = st.sidebar.selectbox("""**Yolo Size** - [Click Here](https://pytorch.org/hub/ultralytics_yolov5/#model-description) or [Click Here](https://github.com/ultralytics/yolov5/#pretrained-checkpoints) for more information on model size. Do note, initial weight download might take a while depending on your internet speed and model size specified.""", ['yolov5n', 'yolov5s', 'yolov5m', 'yolov5l', 'yolov5x'])
     confidence = st.sidebar.slider("""**Prediction Confidence Threshold** [This threshold specifies the accepted probability value of a box belonging to a class.]""", min_value=0.0, max_value=1.0, value=0.35)
     iou = st.sidebar.slider("""**Intersection Over Union Threshold** [This threshold specifies the accepted probability value of overlap between two detected bounding boxes.]""", min_value=0.0, max_value=1.0, value=0.30)
     st.sidebar.markdown("---") 
@@ -198,7 +198,7 @@ def inference():
     input_type = st.sidebar.selectbox("Input Type", ["Image","Video", "Camera"])
 
     # Get model
-    model = load_model_detector()
+    model = load_model_detector(model_size=model_size)
     names = list(model.key_to_string.values())
 
     process_input_feed(write_input_to_canvas=st.sidebar, input_type=input_type, write_output_to_canvas=st, names=names, detector=model, confidence=confidence, perform_inference=perform_inference,iou=iou,save_enc_img_feature=save_enc_img_feature)
