@@ -6,16 +6,10 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from yolov5.utils.general import (
-    check_img_size, non_max_suppression, scale_coords, xyxy2xywh, xywh2xyxy)
-from yolov5.utils.torch_utils import select_device, time_synchronized
-from yolov5.utils.datasets import letterbox
-from utils_ds.parser import get_config
-from utils_ds.draw import draw_boxes
+from detector_utils.general import (xyxy2xywh, xywh2xyxy)
+from detector_utils.parser import get_config
 from deep_sort import build_tracker
-import argparse
 import os
-import time
 import warnings
 import cv2
 import torch
@@ -31,9 +25,9 @@ class YoloBaseDetector(object):
         """
         self.kwargs = kwargs
         self.img_size = kwargs.get('img_size', 640)
-        self.device = select_device(kwargs.get('device', 'cpu')) # 'cuda device, i.e. 0 or 0,1,2,3 or cpu'
-        self.use_cuda = self.device.type == 'cpu' and torch.cuda.is_available()
-        self.half = self.device.type != 'cpu'  # half precision only supported on CUDA
+        self.device = kwargs.get('device', 'cpu') # 'cuda device, i.e. 0 or 0,1,2,3 or cpu'
+        self.use_cuda = self.device == 'cpu' and torch.cuda.is_available()
+        self.half = self.device != 'cpu'  # half precision only supported on CUDA
         self.load_class(**kwargs)
         self.load_model(**kwargs)
 
@@ -42,54 +36,24 @@ class YoloBaseDetector(object):
         :param im0: original image, BGR format
         :return:
         """
-        # preprocess ************************************************************
-        # Padded resize
-        img = letterbox(im0, new_shape=self.img_size)[0]
-        # Convert
-        img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
-        img = np.ascontiguousarray(img)
+        self.detector.conf = conf_thres # NMS confidence threshold
+        self.detector.iou = iou_thres
+        self.detector.classes = classes
+        self.detector.augment = self.kwargs.get('augment', True)
 
-        # numpy to tensor
-        img = torch.from_numpy(img).to(self.device)
-        img = img.half() if self.half else img.float()  # uint8 to fp16/32
-        img /= 255.0  # 0 - 255 to 0.0 - 1.0
-        if img.ndimension() == 3:
-            img = img.unsqueeze(0)
-        s = '%gx%g ' % img.shape[2:]    # print string
-    
         with torch.no_grad():
-            augment = self.kwargs.get('augment', True)
-            pred = self.detector(img, augment=augment)[0]  # list: bz * [ (#obj, 6)]
+            pred = self.detector(im0).pandas().xyxy[0].sort_values('xmin')  # sorted left-right  # list: bz * [ (#obj, 6)]
 
-        conf_thres = conf_thres if conf_thres else self.kwargs.get('conf_thres')
-        iou_thres = iou_thres if iou_thres else self.kwargs.get('iou_thres')
-        classes = classes if classes else self.kwargs.get('classes')
-
-        # Apply NMS and filter object other than person (cls:0)
-        pred = non_max_suppression(pred, conf_thres, iou_thres,
-                                   classes=classes, agnostic=self.kwargs.get('agnostic_nms'))
-
-        # get all obj ************************************************************
-        det = pred[0]  # for video, bz is 1
-        if det is not None and len(det):  # det: (#obj, 6)  x1 y1 x2 y2 conf cls
-
-            # Rescale boxes from img_size to original im0 size
-            det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
-
-            # Print results. statistics of number of each obj
-            for c in det[:, -1].unique():
-                n = (det[:, -1] == c).sum()  # detections per class
-                s += '%g %ss, ' % (n, self.names[int(c)])  # add to string
-
-            bbox_xywh = xyxy2xywh(det[:, :4]).cpu()
-            confs = det[:, 4:5].cpu()
-            classes = det[:, 5:].cpu()
+        if pred.shape[0] != 0:
+            bbox_xywh = xyxy2xywh(pred[['xmin','ymin','xmax','ymax']].to_numpy()[:,:4])
+            confs = pred[['confidence']].to_numpy()
+            classes = pred[['class']].to_numpy()
         else:
             bbox_xywh = None
             confs = None
             classes = None
 
-        return bbox_xywh, confs, classes, im0, 
+        return bbox_xywh, confs, classes
 
     def load_class(self,**kwargs):
         static_file_path= kwargs.get('static_file_path','static_files/yolo_classes.json')
@@ -102,33 +66,28 @@ class YoloBaseDetector(object):
             raise Exception(f"Error {e} while loading model class")
 
     def load_model(self,**kwargs):
-        use_cuda = self.device.type != 'cpu' and torch.cuda.is_available()
+        use_cuda = self.device != 'cpu' and torch.cuda.is_available()
 
         # ***************************** initialize YOLO-V5 **********************************
         # self.detector = torch.load(kwargs.get('weights','yolov5/weights/yolov5s.pt'), map_location=self.device)['model'].float()  # load to FP32
-        model_weight_path = kwargs.get('model_weight_path', "./model_weight/yolov5s.pt") #'yolov5/weights/yolov5s.pt') "./model_weight/yolov5s.pt"
-        # sys.path.insert(0, './yolov5')
+        model_size = kwargs.get('model_size','yolov5n') #['yolov5n', 'yolov5s', 'yolov5m', 'yolov5l', 'yolov5x']
+        model_weight_path = kwargs.get('model_weight_path', "./model_weight/"+model_size+"_v2.pt") #'yolov5/weights/yolov5s.pt') "./model_weight/yolov5s.pt"
         pretrained_model = False if os.path.exists(model_weight_path) else True
-
+        
         try:
-            # model = torch.hub.load('./code/python/yolov5', 'custom',
-            #            path='./best.pt', source='local', force_reload=True)
-            model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=pretrained_model, force_reload=True, autoshape=False, verbose=False)
-            self.detector = torch.load(model_weight_path) if not pretrained_model else model
+            import sys
+            sys.path.insert(0, './yolov5')
+            self.detector = torch.hub.load('ultralytics/yolov5',model_size, pretrained=pretrained_model, force_reload=True, _verbose=pretrained_model) 
+            # if self.pretrained_model else torch.hub.load('ultralytics/yolov5', 'yolov5s', path=self.url_to_model, force_reload=True)
             torch.save(self.detector, model_weight_path) if pretrained_model else None
-            if os.path.isfile('yolov5s.pt'):
-                os.remove('yolov5s.pt')
+            self.detector = torch.load(model_weight_path) if not pretrained_model else self.detector
+
+            print("Model has been loaded")
+            if os.path.isfile(model_size+'.pt'):
+                os.remove(model_size+'.pt')
         except Exception as e:
-            raise Exception(f"Error {e} occured while loading model")
-        self.detector.to(self.device).eval()
+            raise Exception(f"Exception {e} occured while trying to load model")
 
-        if self.half:
-            self.detector.half()  # to FP16
-
-
-        self.names = self.detector.module.names if hasattr(self.detector, 'module') else self.detector.names
-
-        print('Done..')
         if self.device == 'cpu':
             warnings.warn("Running in cpu mode which maybe very slow!", UserWarning)
         return self
@@ -162,7 +121,7 @@ class YoloBaseDetector(object):
     
 class YoloObjectTrackerFrame(YoloBaseDetector):
     def __init__(self,**kwargs):
-        super().__init__(kwargs=kwargs)
+        super().__init__(**kwargs)
         """
             This is the object tracker, that is responsible for detecting and tracking objects
             to suit application needs.
@@ -188,11 +147,8 @@ class YoloObjectTrackerFrame(YoloBaseDetector):
         """
         # Detection time *********************************************************
         # Inference
-        t1 = time_synchronized()
-        bbox_xywh, confs,classes, im2 = self.detect_objects(im0=im0, classes=classes, conf_thres=conf_thres, iou_thres=iou_thres)
-        # Time taken to track objects
-        t2 = time_synchronized()
-
+        bbox_xywh, confs,classes = self.detect_objects(im0=im0, classes=classes, conf_thres=conf_thres, iou_thres=iou_thres)
+     
         if not isinstance(bbox_xywh, type(None)):
             # ****************************** deepsort ****************************
             # print("/n/n/n/nIn sort")
@@ -247,12 +203,8 @@ class YoloObjectTrackerFrame(YoloBaseDetector):
                 class_names.append(class_name)
             minby = min(classes.shape[0], outputs.shape[0])
             im0 = self.draw_boxes(im0, outputs[:minby, :4], object_tracker_ids[:minby], classes=class_names)  # BGR
-
-        t3 = time.time()
-        detection_time = t2-t1
-        tracking_time = t3-t2
         # return im0,deepsort_memory, detection_time, tracking_time
-        return im0, deepsort_memory, detection_time, tracking_time
+        return im0, deepsort_memory
 
 
 
