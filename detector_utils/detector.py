@@ -163,7 +163,6 @@ class YoloBaseDetector(object):
             # if self.pretrained_model else torch.hub.load('ultralytics/yolov5', 'yolov5s', path=self.url_to_model, force_reload=True)
             torch.save(self.detector, model_weight_path) if pretrained_model else None
             self.detector = torch.load(model_weight_path) if not pretrained_model else self.detector
-            print(pretrained_model,  model_weight_path)
             print("Model has been loaded")
             if os.path.isfile(model_size+'.pt'):
                 os.remove(model_size+'.pt')
