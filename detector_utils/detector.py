@@ -132,7 +132,7 @@ class YoloBaseDetector(object):
                     'yolov5s-p':"zoo:cv/detection/yolov5-s/pytorch/ultralytics/coco/pruned-aggressive_96",
                     'yolov5l-pq':"zoo:cv/detection/yolov5-l/pytorch/ultralytics/coco/pruned_quant-aggressive_95",
                     
-                    'yolov5l-p':"zoo:cv/detection/yolov5-l/pytorch/ultralytics/coco/pruned-aggressive_98",
+                    # 'yolov5l-p':"zoo:cv/detection/yolov5-l/pytorch/ultralytics/coco/pruned-aggressive_98",
                     'yolov5s-pq':"zoo:cv/detection/yolov5-s/pytorch/ultralytics/coco/pruned_quant-aggressive_94"
                 }
 

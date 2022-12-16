@@ -199,7 +199,7 @@ def inference():
     if not is_sparsed_optimisation:
         model_size = st.sidebar.selectbox("""**Yolo Size Ultralytics** - [Click Here](https://pytorch.org/hub/ultralytics_yolov5/#model-description) or [Click Here](https://github.com/ultralytics/yolov5/#pretrained-checkpoints) for more information on model size. Do note, initial weight download might take a while depending on your internet speed and model size specified.""", ['yolov5n', 'yolov5s', 'yolov5m', 'yolov5l', 'yolov5x'])
     else:
-        model_size = st.sidebar.selectbox("""**Yolo Size DeepSparse** - [Click Here](https://github.com/neuralmagic/sparseml/blob/main/integrations/ultralytics-yolov5/tutorials/sparsifying_yolov5_using_recipes.md#applying-a-recipe) for more information on model size. Do note, initial weight download might take a while depending on your internet speed and model size specified.""", ['yolov5s-p', 'yolov5s-pq', 'yolov5l-p', 'yolov5l-pq'])
+        model_size = st.sidebar.selectbox("""**Yolo Size DeepSparse** - [Click Here](https://github.com/neuralmagic/sparseml/blob/main/integrations/ultralytics-yolov5/tutorials/sparsifying_yolov5_using_recipes.md#applying-a-recipe) for more information on model size. Do note, initial weight download might take a while depending on your internet speed and model size specified.""", ['yolov5s-pq','yolov5s-p', 'yolov5l-pq'])
     st.sidebar.markdown("---")
 
     confidence = st.sidebar.slider("""**Prediction Confidence Threshold** [This threshold specifies the accepted probability value of a box belonging to a class.]""", min_value=0.0, max_value=1.0, value=0.35)
