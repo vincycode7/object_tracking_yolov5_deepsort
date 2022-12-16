@@ -25,7 +25,6 @@ class YoloBaseDetector(object):
             It defines how data should flow in and out of
             the yolo model to suit app use case.
         """
-        print(f"YoloBaseDetector: {kwargs}")
         self.kwargs = kwargs
         self.img_size = kwargs.get('img_size', 640)
         self.device = kwargs.get('device', 'cpu') # 'cuda device, i.e. 0 or 0,1,2,3 or cpu'
@@ -124,7 +123,6 @@ class YoloBaseDetector(object):
     def load_model_sparsed(self,**kwargs):
         # ***************************** initialize YOLO-V5 **********************************
         # self.detector = torch.load(kwargs.get('weights','yolov5/weights/yolov5s.pt'), map_location=self.device)['model'].float()  # load to FP32
-        print(f"kwargs: {kwargs}")
         model_size = kwargs.get('model_size','yolov5s-pq') #['yolov5s-p', 'yolov5s-pq', 'yolov5l-p', 'yolov5l-pq']
         model_weight_path = kwargs.get('model_weight_path', "./model_weight/"+model_size+"_v2.onnx") #'yolov5/weights/yolov5s.pt') "./model_weight/yolov5s.pt"
         pretrained_model = False if os.path.exists(model_weight_path) else True
@@ -145,7 +143,6 @@ class YoloBaseDetector(object):
         self.detector = yolo_pipeline
         if not os.path.isdir("model_weight"):
             os.makedirs("model_weight")
-        print(f"self.detector.onnx_file_path: {self.detector.onnx_file_path}")
         if os.path.isfile(self.detector.onnx_file_path):
             os.rename(self.detector.onnx_file_path, model_weight_path) if pretrained_model else None
         return self
@@ -166,7 +163,7 @@ class YoloBaseDetector(object):
             # if self.pretrained_model else torch.hub.load('ultralytics/yolov5', 'yolov5s', path=self.url_to_model, force_reload=True)
             torch.save(self.detector, model_weight_path) if pretrained_model else None
             self.detector = torch.load(model_weight_path) if not pretrained_model else self.detector
-
+            print(pretrained_model,  model_weight_path)
             print("Model has been loaded")
             if os.path.isfile(model_size+'.pt'):
                 os.remove(model_size+'.pt')
@@ -207,7 +204,6 @@ class YoloBaseDetector(object):
 class YoloObjectTrackerFrame(YoloBaseDetector):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
-        print(f"YoloObjectTrackerFrame: {kwargs}")
         """
             This is the object tracker, that is responsible for detecting and tracking objects
             to suit application needs.

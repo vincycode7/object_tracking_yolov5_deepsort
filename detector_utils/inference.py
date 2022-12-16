@@ -15,7 +15,6 @@ def hash_model_reference(model_reference):
 # @st.cache
 @st.cache(hash_funcs={YoloObjectTrackerFrame: hash_model_reference})
 def load_optimised_model_detector(**kwargs):
-    print(f"load_optimised_model_detector: {kwargs}")
     model =  YoloObjectTrackerFrame(**kwargs)
     return model
 
