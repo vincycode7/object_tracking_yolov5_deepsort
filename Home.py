@@ -4,10 +4,11 @@
 # Implement Video upload using streamlit (Done)
 # Implement Object detection on streamlit Video (Done)
 # Implement Object detection, tracking and counting  on streamlit Video (Done)
+# Implement FPS metrics (Done)
 
-# Implement FPS metrics
 # Prevent warnings from getting printed in terminal for opencv
 # Look more into the to_cuda option
+# Add extra test on new push
 
 import cv2, tempfile
 import streamlit as st
