@@ -27,10 +27,10 @@ How does this solution work. Basically, Image, Video or Camera Inputs are gotten
 ## Dependency Installation and Running Project (Option 1 - Using Docker)
   1. Install docker locally
   2. Build a docker image using the `Dockerfile` by running `sudo docker build -t yolodeepsort:lastest .` or `docker build -t yolodeepsort:lastest .`
-  3. Once build is complete run using `sudo docker run -p 80:80 yolodeepsort:lastest`
-  4. lastly you go to the url `http://localhost` or `http://0.0.0.0:80`
-  5. [Optional] if you need to connect to webcam for object detection image input use command `sudo docker run --device=/dev/video0  -p 80:80 yolodeepsort:lastest` on Ubuntu to grant access to the webcam. Note, you can call the `--device=path_to_device` multiple times if you have multiple web cams and they will be automatically displayed in UI, where `path_to_device` is where your device is located on your local machine.
-  5. [Optional] If you need to save the encoded output from detection, first run `pwd` in the terminal to get the absolute path of your current directory then use this command `sudo docker run --device=/dev/video0 -v absoslute_path_to_your_current_working_directory:/app -p 80:80 yolodeepsort:lastest` to run docker, replace `absoslute_path_to_your_current_working_directory` with the output you get from running `pwd` in the terminal
+  3. Run `pwd` in terminal to get the absolute path of your current working directory.
+  4. Paste this in terminal, `sudo docker run -v {pwd}:/app -p 80:80 yolodeepsort:lastest` , replace `{pwd}` with the copy of the output from step `3` to run docker, replace if you are having some terminal issue with `${pwd}`. 
+  5. [Optional] if you would like to test solution using the webcam option for object detection use command `sudo docker run -v ${pwd}:/app --device=/dev/video0 -p 80:80 yolodeepsort:lastest`. Note, you can call the `--device=path_to_device` multiple times if you have multiple web cams and they will be automatically displayed in UI, where `path_to_device` is the path where your device is located on your local machine.
+  6. lastly once program is running, you can go to the url `http://localhost` or `http://0.0.0.0:80`
 
 ## Dependency Installation and Running Project (Option 2 - Installing dependencies manually)
 
