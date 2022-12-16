@@ -6,6 +6,7 @@
 # Implement Object detection, tracking and counting  on streamlit Video (Done)
 # Implement FPS metrics (Done)
 
+# Prevent yolov5 from always connecting to internet after weight is downloaded
 # Prevent warnings from getting printed in terminal for opencv
 # Look more into the to_cuda option
 # Add extra test on new push
