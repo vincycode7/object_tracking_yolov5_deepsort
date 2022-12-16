@@ -15,6 +15,7 @@ How does this solution work. Basically, Image, Video or Camera Inputs are gotten
 [Terminal-Version](Option 1)
    1. Open a `terminal` or `command prompt` 
    2. Run `git clone https://github.com/vincycode7/object_tracking_yolov5_deepsort.git`
+   3. git submodule add https://github.com/ultralytics/yolov5.git yolov5
    3. Once download is complete, change directory into the current working directory using `cd object_tracking_yolov5_deepsort/` as this directory contains all the code you need.
 
 [Zip-version](Option 2)
