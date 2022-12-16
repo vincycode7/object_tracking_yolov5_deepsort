@@ -4,6 +4,8 @@ import streamlit as st
 from PIL import Image, ImageOps
 from detector_utils.detector import YoloObjectTrackerFrame
 import pandas as pd
+import time
+import math
 
 def hash_model_reference(model_reference):
     return (
@@ -13,6 +15,7 @@ def hash_model_reference(model_reference):
 # @st.cache
 @st.cache(hash_funcs={YoloObjectTrackerFrame: hash_model_reference})
 def load_optimised_model_detector(**kwargs):
+    print(f"load_optimised_model_detector: {kwargs}")
     model =  YoloObjectTrackerFrame(**kwargs)
     return model
 
@@ -55,6 +58,27 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
         detector: The  backend dectector class responsible for the detectoin of objects. 
         perform_inference: If True it performs inference on inputs.
     """
+    def write_output_single_frame(perform_inference, detector, frame, classes, confidence, draw_box_on_img, iou, deepsort_memory, old_detection_fps, display_input_file, inputLocationImg, outputLocation, outputFPS, outputDataframeLocation):
+        if perform_inference and detector:
+            image = np.asarray(frame)
+            image_with_boxes,deepsort_memory, new_detection_fps = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=draw_box_on_img, iou_thres=iou, deepsort_memory=deepsort_memory)
+            old_detection_fps = math.ceil((old_detection_fps+new_detection_fps)/2) if old_detection_fps > 0 else math.ceil(new_detection_fps)
+            image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
+            image_with_boxes = cv2.resize(image_with_boxes, (600, 400), interpolation=cv2.INTER_LINEAR)
+            if display_input_file:
+                frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                inputLocationImg.image(frame2)
+            outputLocation.image(image_with_boxes)
+            outputFPS.write(f"Detection FPS: {old_detection_fps}")
+
+            try:
+                data = pd.DataFrame(deepsort_memory.results["class_metric"])
+                data_fields = outputDataframeLocation.columns(2)
+                data_fields[0].dataframe(data=data.loc['class_count'])
+                data_fields[1].dataframe(data=data.loc['location_unique_id'].astype('str'))
+            except:
+                pass
+
     global deepsort_memory
     if deepsort_memory == None:
         deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
@@ -62,8 +86,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
     # deepsort_memory = [None, None]
     # Pick classes to use during detection
     # Variables Used to Calculate FPS
-    prev_frame_time = 0 # Variables Used to Calculate FPS
-    new_frame_time = 0
+    old_detection_fps = 0
     filter_classes = st.sidebar.checkbox("Enable Custom Class Filter", True)
     picked_class_ids = []
     default_class = ["car","truck","motorcycle"]
@@ -96,6 +119,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
     inputLocationImg = write_output_to_canvas.sidebar.empty()
     inputLocationImg.image([])
     outputLocation = write_output_to_canvas.empty()
+    outputFPS = write_output_to_canvas.empty()
     outputDataframeLocation = write_output_to_canvas.empty()
     display_input_file = st.sidebar.checkbox("Show Input", False)
     demacateLocation = write_output_to_canvas.sidebar.empty()
@@ -117,20 +141,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
             if isinstance(type(image), type(None)):
                 image = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
               
-            if perform_inference and detector:
-                image_with_boxes,deepsort_memory = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
-                image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
-                image_with_boxes = cv2.resize(image_with_boxes, (600, 400), interpolation=cv2.INTER_LINEAR)
-                if display_input_file:
-                    inputLocationImg.image(img)    
-                outputLocation.image(image_with_boxes)
-                try:
-                    data = pd.DataFrame(deepsort_memory.results["class_metric"])
-                    data_fields = outputDataframeLocation.columns(2)
-                    data_fields[0].dataframe(data=data.loc['class_count'])
-                    data_fields[1].dataframe(data=data.loc['location_unique_id'].astype('str'))
-                except:
-                    pass
+            write_output_single_frame(perform_inference=perform_inference, detector=detector, frame=image, classes=classes, confidence=confidence, draw_box_on_img=True, iou=iou, deepsort_memory=deepsort_memory, old_detection_fps=old_detection_fps, display_input_file=display_input_file, inputLocationImg=inputLocationImg, outputLocation=outputLocation, outputFPS=outputFPS, outputDataframeLocation=outputDataframeLocation)
 
     if input_type in ["Video", "Camera"] and perform_inference:
         file_name = None
@@ -155,25 +166,10 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                 if check:
                     # cv2.imshow("Image", frame)
                     # multi_input.set(cv2.CAP_PROP_POS_FRAMES, 0)
-                    if perform_inference and detector:
-                        image = np.asarray(frame)
-                        image_with_boxes,deepsort_memory = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=True, iou_thres=iou, deepsort_memory=deepsort_memory)
-                        image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
-                        image_with_boxes = cv2.resize(image_with_boxes, (600, 400), interpolation=cv2.INTER_LINEAR)
-                        if display_input_file:
-                            frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                            inputLocationImg.image(frame2)
-                        outputLocation.image(image_with_boxes)
+                    write_output_single_frame(perform_inference=perform_inference, detector=detector, frame=frame, classes=classes, confidence=confidence, draw_box_on_img=True, iou=iou, deepsort_memory=deepsort_memory, old_detection_fps=old_detection_fps, display_input_file=display_input_file, inputLocationImg=inputLocationImg, outputLocation=outputLocation, outputFPS=outputFPS, outputDataframeLocation=outputDataframeLocation)
 
-                        try:
-                            data = pd.DataFrame(deepsort_memory.results["class_metric"])
-                            data_fields = outputDataframeLocation.columns(2)
-                            data_fields[0].dataframe(data=data.loc['class_count'])
-                            data_fields[1].dataframe(data=data.loc['location_unique_id'].astype('str'))
-                        except:
-                            pass
                 else:
-                    outputLocation.write('No video')
+                    outputLocation.write('No Frame')
             
             # Closes all the frames
             cv2.destroyAllWindows()

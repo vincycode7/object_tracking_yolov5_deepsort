@@ -25,6 +25,7 @@ class YoloBaseDetector(object):
             It defines how data should flow in and out of
             the yolo model to suit app use case.
         """
+        print(f"YoloBaseDetector: {kwargs}")
         self.kwargs = kwargs
         self.img_size = kwargs.get('img_size', 640)
         self.device = kwargs.get('device', 'cpu') # 'cuda device, i.e. 0 or 0,1,2,3 or cpu'
@@ -33,10 +34,10 @@ class YoloBaseDetector(object):
         self.load_class(**kwargs)
         self.is_sparsed_optimisation = kwargs.get('is_sparsed_optimisation', False)
         
-        if not self.is_sparsed_optimisation:
-            self.load_model(**kwargs)
+        if self.is_sparsed_optimisation:
+            self.load_model_sparsed(**kwargs)
         else:
-            self.load_model_sparsed()
+            self.load_model(**kwargs)
 
     def base_detect_object(self, im0, conf_thres, iou_thres):
         """
@@ -123,6 +124,7 @@ class YoloBaseDetector(object):
     def load_model_sparsed(self,**kwargs):
         # ***************************** initialize YOLO-V5 **********************************
         # self.detector = torch.load(kwargs.get('weights','yolov5/weights/yolov5s.pt'), map_location=self.device)['model'].float()  # load to FP32
+        print(f"kwargs: {kwargs}")
         model_size = kwargs.get('model_size','yolov5s-pq') #['yolov5s-p', 'yolov5s-pq', 'yolov5l-p', 'yolov5l-pq']
         model_weight_path = kwargs.get('model_weight_path', "./model_weight/"+model_size+"_v2.onnx") #'yolov5/weights/yolov5s.pt') "./model_weight/yolov5s.pt"
         pretrained_model = False if os.path.exists(model_weight_path) else True
@@ -143,7 +145,7 @@ class YoloBaseDetector(object):
         self.detector = yolo_pipeline
         if not os.path.isdir("model_weight"):
             os.makedirs("model_weight")
-
+        print(f"self.detector.onnx_file_path: {self.detector.onnx_file_path}")
         if os.path.isfile(self.detector.onnx_file_path):
             os.rename(self.detector.onnx_file_path, model_weight_path) if pretrained_model else None
         return self
@@ -205,6 +207,7 @@ class YoloBaseDetector(object):
 class YoloObjectTrackerFrame(YoloBaseDetector):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
+        print(f"YoloObjectTrackerFrame: {kwargs}")
         """
             This is the object tracker, that is responsible for detecting and tracking objects
             to suit application needs.
@@ -229,8 +232,12 @@ class YoloObjectTrackerFrame(YoloBaseDetector):
         """
         # Detection time *********************************************************
         # Inference
+        import time
+        new_frame_time = 0
+        prev_frame_time = time.time()
         bbox_xywh, confs,classes,im0 = self.detect_objects(im0=im0, classes=classes, conf_thres=conf_thres, iou_thres=iou_thres)
-
+        new_frame_time = time.time()
+        detection_fps = 1/(new_frame_time-prev_frame_time)
         if not isinstance(bbox_xywh, type(None)):
             # ****************************** deepsort ****************************
             # print("/n/n/n/nIn sort")
@@ -285,7 +292,7 @@ class YoloObjectTrackerFrame(YoloBaseDetector):
             minby = min(classes.shape[0], outputs.shape[0])
             im0 = self.draw_boxes(im0, outputs[:minby, :4], object_tracker_ids[:minby], classes=class_names)  # BGR
         # return im0,deepsort_memory, detection_time, tracking_time
-        return im0, deepsort_memory
+        return im0, deepsort_memory, detection_fps
 
 
 
