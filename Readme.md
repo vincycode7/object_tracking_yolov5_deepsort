@@ -28,7 +28,7 @@ How does this solution work. Basically, Image, Video or Camera Inputs are gotten
   1. Install docker locally
   2. Build a docker image using the `Dockerfile` by running `sudo docker build -t yolodeepsort:lastest .` or `docker build -t yolodeepsort:lastest .`
   3. Run `pwd` in terminal to get the absolute path of your current working directory.
-  4. Paste this in terminal, `sudo docker run -v {pwd}:/app -p 80:80 yolodeepsort:lastest` , replace `{pwd}` with the copy of the output from step `3` to run docker, replace if you are having some terminal issue with `${pwd}`. 
+  4. Paste this in terminal, `sudo docker run -v {pwd}:/app -p 80:80 yolodeepsort:lastest` and replace `{pwd}` with the copy of the output from step `3` to run docker, replace if you are having some terminal issue with `${pwd}`. 
   5. [Optional] if you would like to test solution using the webcam option for object detection use command `sudo docker run -v ${pwd}:/app --device=/dev/video0 -p 80:80 yolodeepsort:lastest`. Note, you can call the `--device=path_to_device` multiple times if you have multiple web cams and they will be automatically displayed in UI, where `path_to_device` is the path where your device is located on your local machine.
   6. lastly once program is running, you can go to the url `http://localhost` or `http://0.0.0.0:80`
 
