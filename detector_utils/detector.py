@@ -80,7 +80,7 @@ class YoloBaseDetector(object):
                 confs = torch.zeros((0, 1)).float()
                 classes = torch.zeros((0, 1)).float()        # return b, c, l, im0, 
         except Exception as e:
-            print(f"error {e} occured while processing output")
+            # print(f"error {e} occured while processing output")
             bbox_xyxy = torch.zeros((0, 4)).float()
             confs = torch.zeros((0, 1)).float()
             classes = torch.zeros((0, 1)).float()

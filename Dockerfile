@@ -17,5 +17,6 @@ EXPOSE 80
 COPY . /app
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
+ENV OPENCV_LOG_LEVEL=OFF
 ENTRYPOINT ["streamlit", "run", "Home.py", "--server.port=80", "--server.address=0.0.0.0"]
 # CMD ["Home.py","--server.address=0.0.0.0","--server.port=8501" ]

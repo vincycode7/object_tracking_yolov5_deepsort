@@ -32,9 +32,10 @@ How does this solution work. Basically, Image, Video or Camera Inputs are gotten
 ## Dependency Installation and Running Project (Option 1 - Using Docker)
   1. Install docker locally
   2. Build a docker image using the `Dockerfile` by running `sudo docker build -t yolodeepsort:lastest .` or `docker build -t yolodeepsort:lastest .`
-  3. Run `pwd` in terminal to get the absolute path of your current working directory.
-  4. Paste this in terminal, `sudo docker run -v {pwd}:/app -p 80:80 yolodeepsort:lastest` and replace `{pwd}` with the copy of the output from step `3` to run docker, replace if you are having some terminal issue with `${pwd}`. 
-  5. [Optional] if you would like to test solution using the webcam option for object detection use command `sudo docker run -v ${pwd}:/app --device=/dev/video0 -p 80:80 yolodeepsort:lastest`. Note, you can call the `--device=path_to_device` multiple times if you have multiple web cams and they will be automatically displayed in UI, where `path_to_device` is the path where your device is located on your local machine.
+  3. Paste this in terminal, `sudo docker run -v ${PWD}:/app --device=/dev/video0 -p 80:80 yolodeepsort:lastest`.
+  4. Note, with you get any error relation to `${PWD}` simply replace it with the abolute path to you current working directory by running `pwd` in terminal to get the absolute path of your current working directory
+  and then replace `${PWD}` with the copy of the output from step `3` to run docker.
+  5. Note, if you are having issues relating to the `--device=/dev/video0` you can simply remove it to disale webcam inferencing. Lastly you can specify `--device=path_to_device` multiple times if you have multiple web cams and they will be automatically displayed in UI, where `path_to_device` is the path where your device is located on your local machine.
   6. lastly once program is running, you can go to the url `http://localhost` or `http://0.0.0.0:80`
 
 ## Dependency Installation and Running Project (Option 2 - Installing dependencies manually)
@@ -82,7 +83,8 @@ How does this solution work. Basically, Image, Video or Camera Inputs are gotten
 #### Step 6 - Running Project
   1. Confirm you are in your current working directory - `object_tracking_yolov5_deepsort`
   2. Activate the environment using the command  `pipenv shell`
-  3. Run the app using the command `streamlit run Home.py --server.address=localhost` or `reset && streamlit run Home.py --server.address=localhost`
+  3. Run `export OPENCV_LOG_LEVEL=OFF`
+  4. Run the app using the command `streamlit run Home.py --server.address=localhost` or `reset && streamlit run Home.py --server.address=localhost`
 
 
 ## General Note

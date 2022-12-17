@@ -7,12 +7,13 @@
 # Implement Object detection, tracking and counting  on streamlit Video (Done)
 # Implement FPS metrics (Done)
 # Prevent yolov5 from always connecting to internet after weight is downloaded(Done)
+# Prevent warnings from getting printed in terminal for opencv(Done)
 
-# Prevent warnings from getting printed in terminal for opencv
+# Update Readme to reflect new UI
 # Look more into the to_cuda option
 # Add extra test on new push
 
-import cv2, tempfile
+import cv2, tempfile, pipes, os
 import streamlit as st
 import json
 from detector_utils.inference import inference
@@ -20,7 +21,7 @@ from detector_utils.inference import inference
 # with open("static_files/yolo_classes.txt") as f:
 #     lines = f.readlines()
 # new_lines = { int(item.split(":")[0]) : item.split(":")[1].strip(" ").strip("\n") for item in lines}
-
+# print("export OPENCV_LOG_LEVEL=OFF" % (pipes.quote(str("OFF")))) #disable opencv logging
 def main():
     st.set_page_config(
         page_title="Home",
