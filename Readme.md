@@ -25,6 +25,8 @@ How does this solution work. Basically, Image, Video or Camera Inputs are gotten
    3. Click on the download dro
    pdown to download a zipped file of all the code.
    4. Once download is complete, Unzip into a folder and open the parent folder `object_tracking_yolov5_deepsort` with any `IDE` of your choice.
+   5. Run `git submodule init`
+   6. Run `git submodule update`
 
 
 ## Dependency Installation and Running Project (Option 1 - Using Docker)
