@@ -13,7 +13,7 @@ class Extractor(object):
         state_dict = torch.load(model_path, map_location=lambda storage, loc: storage)['net_dict']
         self.net.load_state_dict(state_dict)
         logger = logging.getLogger("root.tracker")
-        logger.info("Loading weights from {}... Done!".format(model_path))
+        # logger.info("Loading weights from {}... Done!".format(model_path))
         self.net.to(self.device)
         self.size = (64, 128)
         self.norm = transforms.Compose([

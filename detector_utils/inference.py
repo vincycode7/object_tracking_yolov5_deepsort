@@ -57,35 +57,43 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
         detector: The  backend dectector class responsible for the detectoin of objects. 
         perform_inference: If True it performs inference on inputs.
     """
-    def write_output_single_frame(perform_inference, detector, frame, classes, confidence, draw_box_on_img, iou, deepsort_memory, old_detection_fps, display_input_file, inputLocationImg, outputLocation, outputFPS, outputDataframeLocation):
+    if perform_inference and detector:
+        global deepsort_memory
+        deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
+
+    def write_output_single_frame(perform_inference, detector, frame, classes, confidence, draw_box_on_img, iou, deepsort_memory, old_detection_fps, display_input_file, inputLocationImg, outputLocation, outputFPS, outputDataframeLocations):
         if perform_inference and detector:
             image = np.asarray(frame)
             image_with_boxes,deepsort_memory, new_detection_fps = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=draw_box_on_img, iou_thres=iou, deepsort_memory=deepsort_memory)
-            old_detection_fps = math.ceil((old_detection_fps+new_detection_fps)/2) if old_detection_fps > 0 else math.ceil(new_detection_fps)
+            detection_fps = math.ceil((old_detection_fps+new_detection_fps)/2) if old_detection_fps > 0 else math.ceil(new_detection_fps)
             image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
-            image_with_boxes = cv2.resize(image_with_boxes, (600, 400), interpolation=cv2.INTER_LINEAR)
+            image_with_boxes = cv2.resize(image_with_boxes, (800, 470), interpolation=cv2.INTER_LINEAR)
             if display_input_file:
                 frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 inputLocationImg.image(frame2)
             outputLocation.image(image_with_boxes)
-            outputFPS.write(f"Detection FPS: {old_detection_fps}")
+            col1, col2, col3 = outputFPS.columns(3)
+            col1.metric(label="Detection FPS", value=str(detection_fps), delta=str(detection_fps-old_detection_fps))
 
             try:
                 data = pd.DataFrame(deepsort_memory.results["class_metric"])
-                data_fields = outputDataframeLocation.columns(2)
-                data_fields[0].dataframe(data=data.loc['class_count'])
-                data_fields[1].dataframe(data=data.loc['location_unique_id'].astype('str'))
+                outputDataframeLocations[0].table(data=data.loc['class_count'])
+                col2.metric(label="Total Classes Detected", value=str(data.loc['class_count'].shape[0]))
+                outputDataframeLocations[1].table(data=data.loc['location_unique_id'].astype('str'))
+                col3.metric(label="Total Objects Detected", value=str(sum(data.loc['class_count'])))
             except:
                 pass
+            return detection_fps
+        return 0
 
-    global deepsort_memory
-    if deepsort_memory == None:
-        deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
+    # global deepsort_memory
+    # if deepsort_memory == None:
+    #     deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
 
     # deepsort_memory = [None, None]
     # Pick classes to use during detection
     # Variables Used to Calculate FPS
-    old_detection_fps = 0
+    old_detection_fps = 0 
     filter_classes = st.sidebar.checkbox("Enable Custom Class Filter", True)
     picked_class_ids = []
     default_class = ["car","truck","motorcycle"]
@@ -119,13 +127,14 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
     inputLocationImg.image([])
     outputLocation = write_output_to_canvas.empty()
     outputFPS = write_output_to_canvas.empty()
-    outputDataframeLocation = write_output_to_canvas.empty()
+    outputDataframeLocation1 = write_output_to_canvas.empty()
+    outputDataframeLocation2 = write_output_to_canvas.empty()
     display_input_file = st.sidebar.checkbox("Show Input", False)
     demacateLocation = write_output_to_canvas.sidebar.empty()
 
     # Run detection and display 
     if input_type=="Image":
-        deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
+        # deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
         # inputLocationImg = write_output_to_canvas.sidebar.empty()
         inputLocationImg.image([])
 
@@ -140,7 +149,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
             if isinstance(type(image), type(None)):
                 image = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
               
-            write_output_single_frame(perform_inference=perform_inference, detector=detector, frame=image, classes=classes, confidence=confidence, draw_box_on_img=True, iou=iou, deepsort_memory=deepsort_memory, old_detection_fps=old_detection_fps, display_input_file=display_input_file, inputLocationImg=inputLocationImg, outputLocation=outputLocation, outputFPS=outputFPS, outputDataframeLocation=outputDataframeLocation)
+            old_detection_fps = write_output_single_frame(perform_inference=perform_inference, detector=detector, frame=image, classes=classes, confidence=confidence, draw_box_on_img=True, iou=iou, deepsort_memory=deepsort_memory, old_detection_fps=old_detection_fps, display_input_file=display_input_file, inputLocationImg=inputLocationImg, outputLocation=outputLocation, outputFPS=outputFPS, outputDataframeLocations=[outputDataframeLocation1, outputDataframeLocation2])
 
     if input_type in ["Video", "Camera"] and perform_inference:
         file_name = None
@@ -156,7 +165,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
 
         # Run detection
         if file_name != None:
-            deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
+            # deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
             # inputLocationImg = write_output_to_canvas.sidebar.empty()
             multi_input = cv2.VideoCapture(file_name)
 
@@ -165,7 +174,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
                 if check:
                     # cv2.imshow("Image", frame)
                     # multi_input.set(cv2.CAP_PROP_POS_FRAMES, 0)
-                    write_output_single_frame(perform_inference=perform_inference, detector=detector, frame=frame, classes=classes, confidence=confidence, draw_box_on_img=True, iou=iou, deepsort_memory=deepsort_memory, old_detection_fps=old_detection_fps, display_input_file=display_input_file, inputLocationImg=inputLocationImg, outputLocation=outputLocation, outputFPS=outputFPS, outputDataframeLocation=outputDataframeLocation)
+                    old_detection_fps = write_output_single_frame(perform_inference=perform_inference, detector=detector, frame=frame, classes=classes, confidence=confidence, draw_box_on_img=True, iou=iou, deepsort_memory=deepsort_memory, old_detection_fps=old_detection_fps, display_input_file=display_input_file, inputLocationImg=inputLocationImg, outputLocation=outputLocation, outputFPS=outputFPS, outputDataframeLocations=[outputDataframeLocation1, outputDataframeLocation2])
 
                 else:
                     outputLocation.write('No Frame')
@@ -186,10 +195,19 @@ def inference():
     st.markdown("###### **`Please note, If you are getting a low detection / tracking rate, try changing the confidence threshold on the left side bar.`**")
 
     col1, col2, col3 = st.columns(3)
-    perform_inference = col2.checkbox("Run Solution", False)
+    emptyButton = col2.empty()
+    perform_inference = False
+    stopButton = False
+
+    if not perform_inference or stopButton:
+        startButton = emptyButton.button("Click Here To Start Inference")
+    if startButton:
+        perform_inference = True
+        stopButton = emptyButton.button("Click Here To Stop Inference")
 
     Solution_state = "Running" if perform_inference else "Not Running"
-    st.markdown(f"###### Status: {Solution_state}.")
+    runningStatus = st.empty()
+    runningStatus.markdown(f"###### Status: {Solution_state}.")
     st.sidebar.markdown(f"## Configuration")
     st.sidebar.markdown("---")
     is_sparsed_optimisation = st.sidebar.checkbox("Enable Model Optimisation (This will use deepspare's prunned and quantised model)", True)
@@ -223,7 +241,15 @@ def inference():
     names = list(model.key_to_string.values())
 
     process_input_feed(write_input_to_canvas=st.sidebar, input_type=input_type, write_output_to_canvas=st, names=names, detector=model, confidence=confidence, perform_inference=perform_inference,iou=iou,save_enc_img_feature=save_enc_img_feature)
-    perform_inference = False
+
+    if perform_inference:
+        resetButton = emptyButton.button("Click Here To Reset Inference State")
+        if resetButton:
+            perform_inference = False
+            stopButton = False
+            Solution_state = "Running" if perform_inference else "Not Running"
+
+    # runningStatus.markdown(f"###### Status: {Solution_state}.")
 
     # Display input and output data
     st.markdown("###### - **The `Class Counts` are the unique object counts across frames without duplicates.**")

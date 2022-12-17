@@ -159,11 +159,11 @@ class YoloBaseDetector(object):
         try:
             import sys
             sys.path.insert(0, './yolov5')
-            self.detector = torch.hub.load('ultralytics/yolov5',model_size, pretrained=pretrained_model, force_reload=True, _verbose=pretrained_model) 
+            self.detector = torch.hub.load('yolov5/',model_size, source='local', pretrained=pretrained_model, force_reload=True, _verbose=pretrained_model) 
             # if self.pretrained_model else torch.hub.load('ultralytics/yolov5', 'yolov5s', path=self.url_to_model, force_reload=True)
             torch.save(self.detector, model_weight_path) if pretrained_model else None
             self.detector = torch.load(model_weight_path) if not pretrained_model else self.detector
-            print("Model has been loaded")
+            # print("Model has been loaded")
             if os.path.isfile(model_size+'.pt'):
                 os.remove(model_size+'.pt')
         except Exception as e:
