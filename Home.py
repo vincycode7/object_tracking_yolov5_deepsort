@@ -10,7 +10,6 @@
 # Prevent warnings from getting printed in terminal for opencv(Done)
 
 # Update Readme to reflect new UI
-# Look more into the to_cuda option
 # Add extra test on new push
 
 import cv2, tempfile, pipes, os

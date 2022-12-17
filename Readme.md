@@ -89,24 +89,28 @@ How does this solution work. Basically, Image, Video or Camera Inputs are gotten
 
 ## General Note
 
-Please Note: Upon first run, project will download model weight which would then be saved in this path `./model_weight`, also note that this download process might take few seconds.
-
-![UI Message while model is downloading model checkpoint of loading from previously downloaded checkpoint](./static_files/Screenshot%20from%202022-12-05%2012-23-30.png)
-
 Once project starts running you will have a web interface pop-up, In case you do not see a pop-up check you terminal to see the  localhost and port in this format    
 `Local URL: http://localhost:port or Network URL: http://0.0.0.0:port` copy any one of them and paste in your browser. Once ui is loaded, ui will load model unto backend upon first interaction.
 
-![alt text](./static_files/Screenshot%20from%202022-12-05%2012-22-40.png)
+Please Note: Upon first run, project will download model weight which would then be saved in this path `./model_weight`, also note that this download process might take few seconds.
 
-This is an example of what to expect when project starts running. Do note, that by the default the run checkbox is turned off, you have to hit the `Run solution` checkbox to get the prediction running. Also you have option to test with default image and video  files, load your prefered image and video file or just run the solution in real time, using attached web cam if available.
+![UI Message while model is downloading model checkpoint of loading from previously downloaded checkpoint](./static_files/Screenshot%20from%202022-12-17%2003-20-13.png)
 
-![alt text](./static_files/Screenshot%20from%202022-12-03%2001-56-27.png)       ![alt text](./static_files/Screenshot%20from%202022-12-03%2002-02-04.png)
+
+Once UI is loaded and model is initialized, Click on the center button to run or stop the program.
+This is an example of what to expect when project starts running. Do note, that by the default the run checkbox is turned off, you have to hit the `Click Here  To Start Inference` Button to get the prediction running. Also you have option to test with default image and video  files, load your prefered image and video file or just run the solution in real time, using attached web cam if available.
+
+![Start Inference](./static_files/Screenshot%20from%202022-12-17%2003-21-24.png)
+
+![Inference Output](./static_files/Screenshot%20from%202022-12-17%2003-22-41.png)
 
 
 ## Interacting with the User Interface(UI).
   1. On the UI you will see difference configuration options on the left panel to help set thresholds and load input data, do take a look at all available options before going to item `2` below.
   2. Once you have viewed all available options, Toggle the `Run Solution` checkbox to either run or stop running the solution.
   3. While program is running, you should see bounding box information displayed on the image, also tracking information are displayed below the image.
+
+![configuration1](./static_files/Screenshot%20from%202022-12-17%2003-23-04.png) ![configuration2](./static_files/Screenshot%20from%202022-12-17%2003-23-12.png) ![configuration3](./static_files/Screenshot%20from%202022-12-17%2003-23-21.png)
 
 ## Reference
 1) [object_tracking_yolov5_deepsort](https://github.com/vincycode7/object_tracking_yolov5_deepsort)
