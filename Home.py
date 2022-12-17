@@ -8,9 +8,11 @@
 # Implement FPS metrics (Done)
 # Prevent yolov5 from always connecting to internet after weight is downloaded(Done)
 # Prevent warnings from getting printed in terminal for opencv(Done)
+# Update Readme to reflect new UI (done)
 
-# Update Readme to reflect new UI
+# Update docker to run on render
 # Add extra test on new push
+# Use git action to run test
 
 import cv2, tempfile, pipes, os
 import streamlit as st
