@@ -2,7 +2,7 @@
 
 ![General System overview](./static_files/General%20System%20Architecture.png)
 
-This is a solution to address the edge detection and tracking of specific objects for an imaginary company X, The general system architecture highlights the movement of optimized ml model downloaded from the server on to the edge device while inference is done on the edge device, It also highlights cases where data feedback are gotten to further train model. This process of data feedback to the server can pose a serious privacy issue, it is the duty of the ml engineers to prevent such privacy issues in their system implementation by using different masking techniques on the data before sending to the server.
+This is a solution to address the edge detection and tracking of specific objects for an imaginary company X, The general system architecture highlights the movement of optimized ml model downloaded from the server on to the edge device while inference is done on the edge device, It also highlights cases where data feedback are gotten to further train model. This process of data feedback to the server can pose a serious privacy issue, it is the duty of the ml engineers to prevent such privacy issues in their system implementation by using different masking techniques on the data before sending to the server. In this solution, you will be provided with option to make inference using optimised model(model that have been pruned or quantised) or base model(model that have not been pruned and quantised).
 
 ## An High level description of system implementation on an edge device.
 
