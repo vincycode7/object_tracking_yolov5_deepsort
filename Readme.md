@@ -83,7 +83,7 @@ How does this solution work. Basically, Image, Video or Camera Inputs are gotten
   1. Confirm you are in your current working directory - `object_tracking_yolov5_deepsort`
   2. Activate the environment using the command  `pipenv shell`
   3. Run `export OPENCV_LOG_LEVEL=OFF`
-  4. Run the app using the command `streamlit run Home.py --server.address=localhost` or `reset && streamlit run Home.py --server.address=localhost`
+  4. Run the app using the command `streamlit run Home.py --server.address=localhost` or `reset && streamlit run Home.py --server.address=localhost` or `export OPENCV_LOG_LEVEL=OFF && streamlit run Home.py --server.address=localhost`
 
 
 ## General Note
