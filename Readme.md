@@ -93,7 +93,7 @@ Once project starts running you will have a web interface pop-up, In case you do
 
 Please Note: Upon first run, project will download model weight which would then be saved in this path `./model_weight`, also note that this download process might take few seconds.
 
-![UI Message while model is downloading model checkpoint of loading from previously downloaded checkpoint](./static_files/Screenshot%20from%202022-12-17%2003-20-14.png)
+![UI Message while model is downloading model checkpoint of loading from previously downloaded checkpoint](./static_files/Screenshot%20from%202022-12-17%2003-20-13.png)
 
 
 Once UI is loaded and model is initialized, Click on the center button to run or stop the program.
