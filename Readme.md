@@ -31,7 +31,7 @@ How does this solution work. Basically, Image, Video or Camera Inputs are gotten
 ## Dependency Installation and Running Project (Option 1 - Using Docker)
   1. Install docker locally
   2. Build a docker image using the `Dockerfile` by running `sudo docker build -t yolodeepsort:lastest .` or `docker build -t yolodeepsort:lastest .`
-  3. Paste this in terminal,`sudo docker run -v ${PWD}:/app -p 8501:8501 yolodeepsort:lastest` or  `sudo docker run -v ${PWD}:/app --device=/dev/video0 -p 8501:8501 yolodeepsort:lastest`.
+  3. Paste this in terminal,`sudo docker run -v ${PWD}:/app -p 8501:8501 yolodeepsort:lastest`. if you would like to use webcam option then use `sudo docker run -v ${PWD}:/app --device=/dev/video0 -p 8501:8501 yolodeepsort:lastest`.
   4. Note, with you get any error relation to `${PWD}` simply replace it with the abolute path to you current working directory by running `pwd` in terminal to get the absolute path of your current working directory
   and then replace `${PWD}` with the copy of the output from step `3` to run docker.
   5. Note, if you are having issues relating to the `--device=/dev/video0` you can simply remove it to disale webcam inferencing. Lastly you can specify `--device=path_to_device` multiple times if you have multiple web cams and they will be automatically displayed in UI, where `path_to_device` is the path where your device is located on your local machine.

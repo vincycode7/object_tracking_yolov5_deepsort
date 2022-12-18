@@ -27,7 +27,7 @@ def main():
     st.set_page_config(
         page_title="Home",
 )
-    st.markdown("### Welcome to this Object Detection and Tracking Solution (YOLOv5s)", True)
+    st.markdown("### VisionEX - Object Detection and Tracking Solution (YOLOv5s+DeepSort)", True)
     inference()
 
 main()
