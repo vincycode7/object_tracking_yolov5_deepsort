@@ -110,6 +110,7 @@ validators = "==0.20.0"
 watchdog = "==2.1.9"
 wcwidth = "==0.2.5"
 zipp = "==3.11.0"
+ipywidgets = "*"
 
 [dev-packages]
 

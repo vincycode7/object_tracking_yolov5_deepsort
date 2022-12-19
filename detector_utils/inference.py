@@ -62,18 +62,18 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
         deepsort_memory = detector._init_tracker(save_enc_img_feature=save_enc_img_feature)
 
     def write_output_single_frame(perform_inference, detector, frame, classes, confidence, draw_box_on_img, iou, deepsort_memory, old_detection_fps, display_input_file, inputLocationImg, outputLocation, outputFPS, outputDataframeLocations):
+        if display_input_file:
+                frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                inputLocationImg.image(frame2)
         if perform_inference and detector:
             image = np.asarray(frame)
             image_with_boxes,deepsort_memory, new_detection_fps = detector.image_dectection(image, classes=classes, conf_thres=confidence, draw_box_on_img=draw_box_on_img, iou_thres=iou, deepsort_memory=deepsort_memory)
-            detection_fps = math.ceil((old_detection_fps+new_detection_fps)/2) if old_detection_fps > 0 else math.ceil(new_detection_fps)
+            detection_fps = round((old_detection_fps+new_detection_fps)/2,2) if old_detection_fps > 0 else round(new_detection_fps,2)
             image_with_boxes = cv2.cvtColor(image_with_boxes, cv2.COLOR_BGR2RGB)
             image_with_boxes = cv2.resize(image_with_boxes, (800, 470), interpolation=cv2.INTER_LINEAR)
-            if display_input_file:
-                frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                inputLocationImg.image(frame2)
             outputLocation.image(image_with_boxes)
             col1, col2, col3 = outputFPS.columns(3)
-            col1.metric(label="Detection FPS", value=str(detection_fps), delta=str(detection_fps-old_detection_fps))
+            col1.metric(label="Detection FPS", value=str(detection_fps), delta=str(round(detection_fps-old_detection_fps,2)))
 
             try:
                 data = pd.DataFrame(deepsort_memory.results["class_metric"])
@@ -129,7 +129,7 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
     outputFPS = write_output_to_canvas.empty()
     outputDataframeLocation1 = write_output_to_canvas.empty()
     outputDataframeLocation2 = write_output_to_canvas.empty()
-    display_input_file = st.sidebar.checkbox("Show Input", False)
+    display_input_file = st.sidebar.checkbox("Show Input", True)
     demacateLocation = write_output_to_canvas.sidebar.empty()
 
     # Run detection and display 
@@ -148,10 +148,9 @@ def process_input_feed(input_type, write_input_to_canvas, names=[],write_output_
 
             if isinstance(type(image), type(None)):
                 image = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
-              
             old_detection_fps = write_output_single_frame(perform_inference=perform_inference, detector=detector, frame=image, classes=classes, confidence=confidence, draw_box_on_img=True, iou=iou, deepsort_memory=deepsort_memory, old_detection_fps=old_detection_fps, display_input_file=display_input_file, inputLocationImg=inputLocationImg, outputLocation=outputLocation, outputFPS=outputFPS, outputDataframeLocations=[outputDataframeLocation1, outputDataframeLocation2])
 
-    if input_type in ["Video", "Camera"] and perform_inference:
+    if input_type in ["Video", "Camera"]:
         file_name = None
         if input_type in ["Video"]:
             if video_file_buff:

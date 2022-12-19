@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-opencv \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN pip install ipywidgets 
 EXPOSE 8501
 COPY . /app
 ENV PYTHONUNBUFFERED=1
